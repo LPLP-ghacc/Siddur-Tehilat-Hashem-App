@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Sidur</string>
+    <string name="description">Description</string>
+    <string name="daily">Daily prayers</string>
+    <string name="waking_up">Waking up in the morning</string>
+    <string name="shaharit">Shaharit</string>
+    <string name="minha">Minha</string>
+    <string name="maariv">Maariv</string>
+
+
+    <string name="before_eating">Blessing before eating</string>
+    <string name="after_eating">Blessing after eating</string>
+</resources>
