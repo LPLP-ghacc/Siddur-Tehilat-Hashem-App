@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,7 @@ public class HomeFragment extends Fragment {
 
             String currentHoliday = JewishHolidayHelper.getCurrentHoliday(jc.getMonth(), jc.getDay());
 
-            if(Objects.equals(currentHoliday, getResources().getString(R.string.noholidays))){
+            if(Objects.equals(currentHoliday, "nohol")){
                 currentHoliday = getResources().getString(R.string.noholidays);
             }
 
@@ -85,8 +84,9 @@ public class HomeFragment extends Fragment {
         morningList = rootView.findViewById(R.id.morningList);
 
         String[] morningPrayers = new String[]{
-                getResources().getString(R.string.morning_Shararit),
-                getResources().getString(R.string.mincha)
+                getResources().getString(R.string.shararit),
+                getResources().getString(R.string.mincha),
+                getResources().getString(R.string.maariv)
         };
 
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(
@@ -111,58 +111,58 @@ public class HomeFragment extends Fragment {
 
         setListViewHeightBasedOnChildren(morningList);
 
-        minhaList = rootView.findViewById(R.id.minhaList);
+//        minhaList = rootView.findViewById(R.id.minhaList);
+//
+//        String[] minhaPrayers = new String[]{
+//                getResources().getString(R.string.mincha),
+//        };
+//
+//        ArrayAdapter<String> adapterMinha = new ArrayAdapter<>(
+//                requireContext(),
+//                android.R.layout.simple_list_item_1,
+//                minhaPrayers
+//        );
+//
+//        minhaList.setAdapter(adapterMinha);
+//
+//        minhaList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getActivity(), TestPageActivity.class);
+//
+//                String filePath = getDayPrayerFilePath(position);
+//                intent.putExtra("filePath", filePath);
+//
+//                startActivity(intent);
+//            }
+//        });
+//
+//        setListViewHeightBasedOnChildren(minhaList);
 
-        String[] minhaPrayers = new String[]{
-                getResources().getString(R.string.mincha),
-        };
-
-        ArrayAdapter<String> adapterMinha = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                minhaPrayers
-        );
-
-        minhaList.setAdapter(adapterMinha);
-
-        minhaList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), TestPageActivity.class);
-
-                String filePath = getDayPrayerFilePath(position);
-                intent.putExtra("filePath", filePath);
-
-                startActivity(intent);
-            }
-        });
-
-        setListViewHeightBasedOnChildren(minhaList);
-
-        maarivList = rootView.findViewById(R.id.maarivList);
-
-        String[] maarivPrayers = new String[]{
-                getResources().getString(R.string.maariv_vehu_rachum),
-                getResources().getString(R.string.maariv_amida),
-                getResources().getString(R.string.maariv_aleinu),
-        };
-
-        ArrayAdapter<String> adapterMaariv = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                maarivPrayers
-        );
-
-        maarivList.setAdapter(adapterMaariv);
-        setListViewHeightBasedOnChildren(maarivList);
+//        maarivList = rootView.findViewById(R.id.maarivList);
+//
+//        String[] maarivPrayers = new String[]{
+//                getResources().getString(R.string.vehu_rachum),
+//        };
+//
+//        ArrayAdapter<String> adapterMaariv = new ArrayAdapter<>(
+//                requireContext(),
+//                android.R.layout.simple_list_item_1,
+//                maarivPrayers
+//        );
+//
+//        maarivList.setAdapter(adapterMaariv);
+//        setListViewHeightBasedOnChildren(maarivList);
     }
 
     private String getMorningPrayerFilePath(int position) {
         switch (position) {
             case 0:
-                return "file:///android_asset/pages/3 Shararit.html";
+                return "file:///android_asset/pages/Shararit.html";
             case 1:
                 return "file:///android_asset/pages/Minha.html";
+            case 2:
+                return "file:///android_asset/pages/Maariv.html";
             default:
                 return "file:///android_asset/default.html";
         }

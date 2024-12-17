@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Сидур Техилат ха-Шем</string>
+    <string name="holidays">Праздники</string>
+    <string name="daily">Ежедневные молитвы</string>
+    <string name="settings">Настройки</string>
+    <string name="description">Описание</string>
+    <string name="shararit">Шахарит</string>
+    <string name="mincha">Минха</string>
+    <string name="korbanot">Корбанот</string>
+    <string name="raisingTorah">Поднятие Торы</string>
+    <string name="ashrei">Ашрей</string>
+    <string name="amida">Амида</string>
+    <string name="tachanun">Таханун</string>
+    <string name="aleinu">Алейну</string>
+    <string name="maariv">Маарив</string>
+    <string name="vehu_rachum">Вегу Рахум</string>
+    <string name="todayis">Сегодня</string>
+    <string name="in">через</string>
+    <string name="days">дней</string>
+    <string name="noholidays">нет праздников</string>
+    <string name="mode_ani">Модэ ани</string>
+    <string name="tzitzit">Благословение на цицит катан</string>
+    <string name="talit">Порядок облачения в талит гадоль</string>
+    <string name="mishna">Мишна</string>
+    <string name="baraita">Барайта</string>
+    <string name="kaddish_derabanan">Кадиш дерабанан</string>
+    <string name="hoidu">Гойду</string>
+    <string name="psukei_dezimra">Псукей-Дезимра</string>
+    <string name="barchu">Барху</string>
+    <string name="shema">Шма</string>
+    <string name="avinu_malkeinu">Авину Малкейну</string>
+    <string name="hatzi_kaddish">Хатци кадиш</string>
+    <string name="readingTorah">Чтение Торы</string>
+    <string name="beit_yaakob">Бейт Яаков</string>
+    <string name="psalmsoftheday">Псалмы на каждый день</string>
+    <string name="hope_kave">Кавэ</string>
+    <string name="kaddishyatom">Кадиш ятом</string>
+    <string name="rabeinutam">Облачение в тфиллин Рабейну-Там</string>
+    <string name="sixmembers">Шесть предписаний</string>
+    <string name="kaddishshalem">Кадиш Шалем</string>
+</resources>

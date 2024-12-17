@@ -22,7 +22,7 @@ public class JewishHolidayHelper {
                 return holiday.name;
             }
         }
-        return "no holidays";
+        return "nohol";
     }
 
     // Метод: сколько дней до следующего праздника и его название

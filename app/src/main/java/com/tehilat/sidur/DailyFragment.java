@@ -29,26 +29,26 @@ public class DailyFragment extends Fragment {
     }
 
     private void initListViews(@NonNull View rootView) {
-        variousBlessingsList = rootView.findViewById(R.id.variousBlessingsList);
-
-        String[] variousBlessings = new String[]{
-                getResources().getString(R.string.birkat_hamazon),
-                getResources().getString(R.string.bedtime_shma),
-                getResources().getString(R.string.brit_mila),
-                getResources().getString(R.string.sheva_brachot),
-                getResources().getString(R.string.travelers_prayer),
-                getResources().getString(R.string.mein_shalosh),
-                getResources().getString(R.string.blessings),
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                variousBlessings
-        );
-
-        variousBlessingsList.setAdapter(adapter);
-        setListViewHeightBasedOnChildren(variousBlessingsList);
+//        variousBlessingsList = rootView.findViewById(R.id.variousBlessingsList);
+//
+//        String[] variousBlessings = new String[]{
+//                getResources().getString(R.string.birkat_hamazon),
+//                getResources().getString(R.string.bedtime_shma),
+//                getResources().getString(R.string.brit_mila),
+//                getResources().getString(R.string.sheva_brachot),
+//                getResources().getString(R.string.travelers_prayer),
+//                getResources().getString(R.string.mein_shalosh),
+//                getResources().getString(R.string.blessings),
+//        };
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                requireContext(),
+//                android.R.layout.simple_list_item_1,
+//                variousBlessings
+//        );
+//
+//        variousBlessingsList.setAdapter(adapter);
+//        setListViewHeightBasedOnChildren(variousBlessingsList);
     }
 
     public static void setListViewHeightBasedOnChildren(@NonNull ListView listView) {
