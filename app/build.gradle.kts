@@ -43,3 +43,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}

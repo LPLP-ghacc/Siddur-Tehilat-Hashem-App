@@ -1,82 +1,77 @@
 package com.tehilat.sidur;
 
+import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import org.jetbrains.annotations.Contract;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class TestPageActivity extends AppCompatActivity
 {
-    private WebView controller;
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.test_page);
 
-        controller = (WebView) findViewById(R.id.simpleWebView);
+        WebView controller = (WebView) findViewById(R.id.simpleWebView);
         controller.getSettings().setJavaScriptEnabled(true);
 
-        loadHTMLPageFrom("travel");
+        String filePath = getIntent().getStringExtra("filePath");
+        String htmlContent = readFileFrom(filePath);
+        boolean isDarkTheme = isDarkThemeActive();
+        htmlContent = wrapHtmlContent(htmlContent, isDarkTheme);
+
+        controller.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
     }
 
     @NonNull
-    private Page getPage(String fileName) throws IOException {
-        String path = "file:///android_asset/" + fileName;
-        List<String> lines = null;
+    @Contract(pure = true)
+    private String wrapHtmlContent(String originalHtml, boolean isDarkTheme) {
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            lines = Files.readAllLines(Paths.get(path));
-        }
-
-        Page result = new Page();
-
-        for (String line : lines) {
-            result.addContent(line);
-        }
-
-        return result;
+        String themeCss = isDarkTheme ? readFileFrom("pages/styles/dark.css") : readFileFrom("pages/styles/white.css");
+        Log.i("PIP", themeCss);
+        return "<html><head>" + themeCss + "</head>" + originalHtml + "</html>";
     }
 
-    private void setPage(Page page){
+    @NonNull
+    private String readFileFrom(@NonNull String filePath) {
+        StringBuilder builder = new StringBuilder();
 
-    }
+        try {
+            String assetFilePath = filePath.replace("file:///android_asset/", "");
 
-    private void loadPageFrom(String fileName){
-        String path = "file:///android_asset/" + fileName;
-        controller.loadUrl(path);
-    }
+            InputStream inputStream = getAssets().open(assetFilePath);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String line;
 
-    private void loadHTMLPageFrom(String fileNameWithoutExtension){
-        String path = "file:///android_asset/pages/" + fileNameWithoutExtension + ".html";
-        controller.loadUrl(path);
-    }
+            while ((line = reader.readLine()) != null) {
+                builder.append(line).append("\n");
+            }
 
-    public static class Page{
-        private String content;
-
-        public void setContent(String content){
-            this.content = content;
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        public void addContent(String delta){
-            this.content += content;
-        }
+        return builder.toString();
+    }
 
-        public String getContent(){
-            return content;
-        }
+    private boolean isDarkThemeActive() {
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
 }
 

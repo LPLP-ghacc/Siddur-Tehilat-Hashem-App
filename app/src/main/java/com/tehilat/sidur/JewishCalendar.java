@@ -1,5 +1,7 @@
 package com.tehilat.sidur;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.util.Calendar;
@@ -7,7 +9,7 @@ import java.util.GregorianCalendar;
 
 public class JewishCalendar {
 
-    private int day;
+    public int day;
     private int month;
     private int year;
 

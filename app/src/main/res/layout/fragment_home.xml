@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:visibility="visible">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/app_name">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- INFO BLOCK -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    tools:ignore="UselessLeaf">
+
+                    <TextView
+                        android:id="@+id/jewishdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SAMPLE TEXT"
+                        android:textSize="30dp"/>
+
+                    <TextView
+                        android:id="@+id/gregoriandate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SAMPLE TEXT"
+                        android:textSize="30dp"/>
+
+                    <TextView
+                        android:id="@+id/holidaycalendar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SAMPLE TEXT"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
+                <!-- List of blesses -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/daily">
+
+                </TextView>
+
+                <ListView
+                    android:id="@+id/morningList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerHeight="1dp"
+                    android:padding="0dp">
+
+                </ListView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/mincha">
+
+                </TextView>
+
+                <ListView
+                    android:id="@+id/minhaList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerHeight="1dp">
+
+                </ListView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/maariv">
+
+                </TextView>
+
+                <ListView
+                    android:id="@+id/maarivList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerHeight="1dp">
+
+                </ListView>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

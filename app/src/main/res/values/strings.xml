@@ -1,13 +1,41 @@
 <resources>
+    <!-- menu strings -->
     <string name="app_name">Sidur</string>
-    <string name="description">Description</string>
+    <string name="holidays">Holidays</string>
     <string name="daily">Daily prayers</string>
-    <string name="waking_up">Waking up in the morning</string>
-    <string name="shaharit">Shaharit</string>
-    <string name="minha">Minha</string>
+    <string name="settings">Settings</string>
+    <string name="description">Description</string>
+
+    <!-- main blesses strings -->
+    <string name="morning_Shararit">Shaharit</string>
+    <string name="mincha">Mincha</string>
+
+    <string name="mincha_korbanot">1 Korbanot</string>
+    <string name="mincha_ashrei">2 Ashrei</string>
+    <string name="mincha_amida">3 Amida</string>
+    <string name="mincha_tachanun">4 Tachanun</string>
+    <string name="mincha_aleinu">5 Aleinu</string>
+
     <string name="maariv">Maariv</string>
+    <string name="maariv_vehu_rachum">1 Vehu Rachum</string>
+    <string name="maariv_amida">2 Amida</string>
+    <string name="maariv_aleinu">3 aleinu</string>
+
+    <!-- Various Blessings strings -->
+    <string name="various_blessings">Various Blessings</string>
+    <string name="birkat_hamazon">Birkat HaMazon</string>
+    <string name="bedtime_shma">Bedtime Shma</string>
+    <string name="brit_mila">Brit Mila</string>
+    <string name="sheva_brachot">Sheva Brachot</string>
+    <string name="travelers_prayer">Travelers Prayer</string>
+    <string name="mein_shalosh">Mein shalosh</string>
+    <string name="blessings">Blessings</string>
+
+    <string name="todayis">Today is </string>
+    <!-- cherez -->
+    <string name="in">in</string>
+    <string name="days">days</string>
+    <string name="noholidays">no holidays</string>
 
 
-    <string name="before_eating">Blessing before eating</string>
-    <string name="after_eating">Blessing after eating</string>
 </resources>

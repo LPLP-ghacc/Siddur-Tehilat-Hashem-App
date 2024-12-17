@@ -6,24 +6,37 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout b1;
+    BottomNavigationView botNav;
+    HomeFragment home = new HomeFragment();
+    DailyFragment daily = new DailyFragment();
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,14 +48,34 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        b1 = findViewById(R.id.layout1);
+        botNav = (BottomNavigationView) findViewById(R.id.bottom_nav);
 
-        Log.println(Log.INFO, "Pipaipipa", "aaagg!!");
-        b1.setClickable(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainSidur, home)
+                .commit();
 
-        b1.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, TestPageActivity.class);
-            startActivity(intent);
+        botNav.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+
+                if(item.getItemId() == R.id.home){
+                    selectedFragment = home;
+                } else if (item.getItemId() == R.id.daily) {
+                    selectedFragment = daily;
+                }
+
+                if (selectedFragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.mainSidur, selectedFragment);
+                    transaction.commit();
+                    return true;
+                }
+
+                return false;
+            }
         });
     }
 }
+
