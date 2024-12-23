@@ -1,107 +1,107 @@
 <style>
-    body {
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background-color: #000;
-        color: #fff;
-        font-family: 'Times New Roman', Times, serif;
-                line-height: 1.8;
-    }
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #fff;
+  color: #000;
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.8;
+}
 
-    h2{
-    text-align: center;
-    font-size: 28px;
-          background-color: rgba(112, 113, 113, .2) ;
+h2 {
+  text-align: center;
+  font-size: 28px;
+  background-color: rgba(112, 113, 113, 0.2);
 
-          text-align: right;
-          margin: 5px;
-          margin-bottom: 15px;
-    }
+  text-align: right;
+  margin: 5px;
+  margin-bottom: 15px;
+}
 
-        h3{
-            text-align: center;
-          color: #eaeaea;
-            font-size: 28px;
-          background-color: rgba(112, 113, 113, .2) ;
-          margin: 5px;
-          margin-bottom: 15px;
-          text-align: center;
-        }
+h3 {
+  text-align: center;
+  color: #000;
+  font-size: 28px;
+  background-color: rgba(112, 113, 113, 0.2);
+  margin: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
 
-            .hint{
-                  text-align: center;
-              color: rgba(112, 113, 113, .9) ;
-                font-size: 28px;
-              margin: 5px;
-              text-align: center;
-            }
+.hint {
+  text-align: center;
+  color: rgba(112, 113, 113, 0.9);
+  font-size: 28px;
+  margin: 5px;
+  text-align: center;
+}
 
-            .insert{
-              color: rgba(112, 113, 113, 0.9);
-              background-color: rgba(112, 113, 113, 0.2);
-            }
+.insert {
+  color: rgba(112, 113, 113, 0.9);
+  background-color: rgba(112, 113, 113, 0.2);
+}
 
-    .header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-        background-color: #f9f9f9;
-        padding: 10px 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
 
-    .current-section {
-        width: calc(100% - 20px);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #000;
-        cursor: pointer;
-        text-align: center;
-    }
+.current-section {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #000;
+  cursor: pointer;
+  text-align: center;
+}
 
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        top: 50px;
-        left: 0;
-        right: 0;
-        background-color: #000;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 20;
-    }
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
 
-    .dropdown-menu.open {
-        display: block;
-    }
+.dropdown-menu.open {
+  display: block;
+}
 
-        .dropdown-menu li {
-            padding: 10px 15px;
-            cursor: pointer;
-            text-align: center;
-        }
+.dropdown-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  text-align: center;
+}
 
-    .dropdown-menu li:hover {
-        background-color: #f0f0f0;
-    }
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
 
 .section {
   margin-top: 80px;
@@ -123,4 +123,5 @@
 .right {
   width: 45%;
 }
+
 </style>
