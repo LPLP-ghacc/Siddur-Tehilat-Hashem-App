@@ -49,6 +49,7 @@ public class TestPageActivity extends AppCompatActivity
     private String replacePlaceholdersWithLocalizedStrings(String htmlContent) {
         // Заменяем плейсхолдеры локализованными строками
         htmlContent = htmlContent.replace("{{shaharit}}", getString(R.string.shararit));
+        htmlContent = htmlContent.replace("{{maariv}}", getString(R.string.maariv));
         htmlContent = htmlContent.replace("{{korbanot}}", getString(R.string.korbanot));
         htmlContent = htmlContent.replace("{{mode_ani}}", getString(R.string.mode_ani));
         htmlContent = htmlContent.replace("{{tzitzit}}", getString(R.string.tzitzit));
@@ -77,6 +78,9 @@ public class TestPageActivity extends AppCompatActivity
         htmlContent = htmlContent.replace("{{sixmembers}}", getString(R.string.sixmembers));
         htmlContent = htmlContent.replace("{{kaddishshalem}}", getString(R.string.kaddishshalem));
         htmlContent = htmlContent.replace("{{mincha}}", getString(R.string.mincha));
+        htmlContent = htmlContent.replace("{{vehu_rachum}}", getString(R.string.vehu_rachum));
+        htmlContent = htmlContent.replace("{{kaddish}}", getString(R.string.kaddish));
+        htmlContent = htmlContent.replace("{{birkathamazon}}", getString(R.string.birkathamazon));
 
         return htmlContent;
     }

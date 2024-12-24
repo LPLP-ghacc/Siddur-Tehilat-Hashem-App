@@ -87,7 +87,8 @@ public class HomeFragment extends Fragment {
                 getResources().getString(R.string.shararit),
                 getResources().getString(R.string.mincha),
                 getResources().getString(R.string.maariv),
-                getResources().getString(R.string.tehilim)
+                getResources().getString(R.string.tehilim),
+                getResources().getString(R.string.birkathamazon),
         };
 
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(
@@ -166,6 +167,8 @@ public class HomeFragment extends Fragment {
                 return "file:///android_asset/pages/Maariv.html";
             case 3:
                 return "file:///android_asset/Tegilim/tegilim.html";
+            case 4:
+                return "file:///android_asset/pages/BirkatHamazon.html";
             default:
                 return "file:///android_asset/default.html";
         }
