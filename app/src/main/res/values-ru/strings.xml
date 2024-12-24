@@ -42,4 +42,6 @@
     <string name="kaddish">Кадиш</string>
     <string name="tehilim">Тегилим</string>
     <string name="birkathamazon">Благословение после еды</string>
+    <string name="britmila">Брит-мила</string>
+    <string name="shevaberachot">Благословения новобрачных</string>
 </resources>

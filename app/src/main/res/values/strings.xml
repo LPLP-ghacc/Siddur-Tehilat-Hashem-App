@@ -42,4 +42,6 @@
     <string name="kaddish">Kaddish</string>
     <string name="tehilim">Tehilim</string>
     <string name="birkathamazon">Blessing after a meal</string>
+    <string name="britmila">Brit-Mila</string>
+    <string name="shevaberachot">The Seven Blessings</string>
 </resources>

@@ -81,7 +81,7 @@ public class TestPageActivity extends AppCompatActivity
         }).start();
 
         // Обработка жестов
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+        //scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }
 
     @NonNull
@@ -126,6 +126,8 @@ public class TestPageActivity extends AppCompatActivity
         htmlContent = htmlContent.replace("{{vehu_rachum}}", getString(R.string.vehu_rachum));
         htmlContent = htmlContent.replace("{{kaddish}}", getString(R.string.kaddish));
         htmlContent = htmlContent.replace("{{birkathamazon}}", getString(R.string.birkathamazon));
+        htmlContent = htmlContent.replace("{{britmila}}", getString(R.string.britmila));
+        htmlContent = htmlContent.replace("{{shevaberachot}}", getString(R.string.shevaberachot));
 
         return htmlContent;
     }
@@ -158,14 +160,14 @@ public class TestPageActivity extends AppCompatActivity
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        // Обработка события жеста для масштабирования текста
-        scaleGestureDetector.onTouchEvent(event);
-        // Передача события WebView для корректного поведения
-        controller.dispatchTouchEvent(event);
-        return super.dispatchTouchEvent(event);
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent event) {
+//        // Обработка события жеста для масштабирования текста
+//        scaleGestureDetector.onTouchEvent(event);
+//        // Передача события WebView для корректного поведения
+//        controller.dispatchTouchEvent(event);
+//        return super.dispatchTouchEvent(event);
+//    }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
