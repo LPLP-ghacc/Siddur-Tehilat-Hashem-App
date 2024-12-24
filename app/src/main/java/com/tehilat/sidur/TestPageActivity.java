@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -42,8 +43,7 @@ public class TestPageActivity extends AppCompatActivity
 
         webSettings = controller.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
-        webSettings.setSupportZoom(true);
+        webSettings.setSupportZoom(false);
 
         // Кэширование контента
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -67,7 +67,7 @@ public class TestPageActivity extends AppCompatActivity
         // Получение пути файла через Extra String из прошлой страницы
         String filePath = getIntent().getStringExtra("filePath");
 
-        // Асинхронное чтение и загрузка
+        // Асинхронное чтение, обработка и загрузка
         new Thread(() -> {
             String htmlContent = readFileFrom(filePath);
             htmlContent = replacePlaceholdersWithLocalizedStrings(htmlContent);
@@ -159,9 +159,12 @@ public class TestPageActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onTouchEvent(android.view.MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        // Обработка события жеста для масштабирования текста
         scaleGestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
+        // Передача события WebView для корректного поведения
+        controller.dispatchTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -171,13 +174,13 @@ public class TestPageActivity extends AppCompatActivity
 
             // Изменение размера текста
             if (scaleFactor > 1) { // Увеличение
-                textZoom += 10;
+                textZoom += 1;
             } else if (scaleFactor < 1) { // Уменьшение
-                textZoom -= 10;
+                textZoom -= 1;
             }
 
             // Ограничиваем диапазон
-            textZoom = Math.max(50, Math.min(textZoom, 200));
+            textZoom = Math.max(80, Math.min(textZoom, 105));
 
             // Применяем новый размер текста
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
