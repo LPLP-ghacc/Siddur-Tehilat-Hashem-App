@@ -2,8 +2,12 @@ package com.tehilat.sidur;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +23,11 @@ import java.io.InputStreamReader;
 
 public class TestPageActivity extends AppCompatActivity
 {
+    private ScaleGestureDetector scaleGestureDetector;
+    private int textZoom = 100; // Начальный размер текста (100%)
+    private WebView controller;
+    private WebSettings webSettings;
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +35,53 @@ public class TestPageActivity extends AppCompatActivity
         EdgeToEdge.enable(this);
         setContentView(R.layout.test_page);
 
-        WebView controller = (WebView) findViewById(R.id.simpleWebView);
-        controller.getSettings().setJavaScriptEnabled(true);
+        // Инит для веб контроллера
+        controller = (WebView) findViewById(R.id.simpleWebView);
+        // Аппаратное ускорение
+        controller.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
+        webSettings = controller.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setSupportZoom(true);
+
+        // Кэширование контента
+        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+
+        // отключаем ненужные настройки
+        webSettings.setDomStorageEnabled(true); // только если нужно
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
+        webSettings.setSavePassword(false);
+
+        // Установка начального размера текста (поддерживается начиная с API 14)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            webSettings.setTextZoom(textZoom);
+        }
+
+        // Включение зума - не требуется
+        //webSettings.setBuiltInZoomControls(true);
+        //webSettings.setDisplayZoomControls(true);
+        //webSettings.setSupportZoom(true);
+        //controller.setInitialScale(100);
+
+        // Получение пути файла через Extra String из прошлой страницы
         String filePath = getIntent().getStringExtra("filePath");
-        String htmlContent = readFileFrom(filePath);
-        htmlContent = replacePlaceholdersWithLocalizedStrings(htmlContent);
 
-        boolean isDarkTheme = isDarkThemeActive();
-        htmlContent = wrapHtmlContent(htmlContent, isDarkTheme);
+        // Асинхронное чтение и загрузка
+        new Thread(() -> {
+            String htmlContent = readFileFrom(filePath);
+            htmlContent = replacePlaceholdersWithLocalizedStrings(htmlContent);
+            boolean isDarkTheme = isDarkThemeActive();
+            String finalContent = wrapHtmlContent(htmlContent, isDarkTheme);
 
-        controller.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
+            // загрузка контента в webview (веб контроллер)
+            runOnUiThread(() -> controller.setVisibility(View.INVISIBLE));
+            runOnUiThread(() -> controller.loadDataWithBaseURL(null, finalContent, "text/html", "UTF-8", null));
+            runOnUiThread(() -> controller.setVisibility(View.VISIBLE));
+        }).start();
+
+        // Обработка жестов
+        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }
 
     @NonNull
@@ -111,6 +156,47 @@ public class TestPageActivity extends AppCompatActivity
     private boolean isDarkThemeActive() {
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    @Override
+    public boolean onTouchEvent(android.view.MotionEvent event) {
+        scaleGestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            float scaleFactor = detector.getScaleFactor(); // Коэффициент масштабирования
+
+            // Изменение размера текста
+            if (scaleFactor > 1) { // Увеличение
+                textZoom += 10;
+            } else if (scaleFactor < 1) { // Уменьшение
+                textZoom -= 10;
+            }
+
+            // Ограничиваем диапазон
+            textZoom = Math.max(50, Math.min(textZoom, 200));
+
+            // Применяем новый размер текста
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                webSettings.setTextZoom(textZoom);
+            } else {
+                // Для старых версий Android (до API 14)
+                if (textZoom <= 75) {
+                    webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+                } else if (textZoom <= 125) {
+                    webSettings.setTextSize(WebSettings.TextSize.NORMAL);
+                } else if (textZoom <= 150) {
+                    webSettings.setTextSize(WebSettings.TextSize.LARGER);
+                } else {
+                    webSettings.setTextSize(WebSettings.TextSize.LARGEST);
+                }
+            }
+
+            return true;
+        }
     }
 }
 
