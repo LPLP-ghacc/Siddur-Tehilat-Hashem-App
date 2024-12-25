@@ -3,7 +3,7 @@
 
     <item android:id="@+id/home"
         android:title="@string/app_name"
-        android:icon="@color/cardview_dark_background"/>
+        android:icon="@drawable/big_button_shape"/>
 
     <item android:id="@+id/daily"
         android:title="@string/daily"

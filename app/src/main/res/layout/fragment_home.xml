@@ -75,43 +75,45 @@
 
                 </ListView>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/mincha">
+                <!--
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:text="@string/mincha">
 
-                </TextView>
+</TextView>
 
-                <ListView
-                    android:id="@+id/minhaList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
-                    android:dividerHeight="1dp">
 
-                </ListView>
+<ListView
+    android:id="@+id/minhaList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@android:color/darker_gray"
+    android:dividerHeight="1dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/maariv">
+</ListView>
 
-                </TextView>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:text="@string/maariv">
 
-                <ListView
-                    android:id="@+id/maarivList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
-                    android:dividerHeight="1dp">
+</TextView>
 
-                </ListView>
+<ListView
+    android:id="@+id/maarivList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@android:color/darker_gray"
+    android:dividerHeight="1dp">
 
-            </LinearLayout>
-        </ScrollView>
+</ListView>
+-->
+</LinearLayout>
+</ScrollView>
 
-    </LinearLayout>
+</LinearLayout>
 
 </FrameLayout>
