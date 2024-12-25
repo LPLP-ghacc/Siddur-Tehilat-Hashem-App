@@ -44,4 +44,14 @@
     <string name="birkathamazon">Blessing after a meal</string>
     <string name="britmila">Brit-Mila</string>
     <string name="shevaberachot">The Seven Blessings</string>
+    <string name="psalm">Psalm</string>
+    <string name="hazan">Hazan</string>
+    <string name="community">Community</string>
+    <string name="roshhashana">Rosh Hashanah</string>
+    <string name="yomkippur">Yom Kippur</string>
+    <string name="sukkot">Sukkot</string>
+    <string name="chanukah">Chanukah</string>
+    <string name="pesach">Pesach</string>
+    <string name="shavuot">Shavuot</string>
+    <string name="Purim">Purim</string>
 </resources>

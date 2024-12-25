@@ -1,5 +1,4 @@
 <style>
-<style>
 body {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -132,5 +131,26 @@ h3 {
 .right {
   width: 45%;
 }
-</style>
+
+.insertButton {
+      width: calc(100% - 20px);
+    display: block;
+    margin: 10;
+    text-align: center;
+    cursor: pointer;
+  background-color: rgba(112, 113, 113, 0.2);
+  color: rgba(112, 113, 113, 0.9);
+  font-size: 28px;
+  border-radius: 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    height: 100vh;
+}
+
 </style>

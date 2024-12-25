@@ -44,4 +44,14 @@
     <string name="birkathamazon">Благословение после еды</string>
     <string name="britmila">Брит-мила</string>
     <string name="shevaberachot">Благословения новобрачных</string>
+    <string name="psalm">Псалом</string>
+    <string name="hazan">ведущий</string>
+    <string name="community">община</string>
+    <string name="roshhashana">Рош ха-Шана</string>
+    <string name="yomkippur">Йом-кипур</string>
+    <string name="sukkot">Суккот</string>
+    <string name="chanukah">Ханука</string>
+    <string name="pesach">Песах</string>
+    <string name="shavuot">Шавуот</string>
+    <string name="Purim">Пурим</string>
 </resources>

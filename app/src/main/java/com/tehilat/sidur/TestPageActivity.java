@@ -128,6 +128,11 @@ public class TestPageActivity extends AppCompatActivity
         htmlContent = htmlContent.replace("{{birkathamazon}}", getString(R.string.birkathamazon));
         htmlContent = htmlContent.replace("{{britmila}}", getString(R.string.britmila));
         htmlContent = htmlContent.replace("{{shevaberachot}}", getString(R.string.shevaberachot));
+        htmlContent = htmlContent.replace("{{tehilim}}", getString(R.string.tehilim));
+        htmlContent = htmlContent.replace("{{psalm}}", getString(R.string.psalm));
+        htmlContent = htmlContent.replace("{{hazan}}", getString(R.string.hazan));
+        htmlContent = htmlContent.replace("{{community}}", getString(R.string.community));
+
 
         return htmlContent;
     }

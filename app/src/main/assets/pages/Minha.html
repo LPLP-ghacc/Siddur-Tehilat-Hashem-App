@@ -1,30 +1,21 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script>
-    function toggleText() {
-      const text = document.getElementById('hidden-text');
-      text.style.display = text.style.display === 'none' ? 'block' : 'none';
+    function toggleText(textId) {
+      const text = document.getElementById(`hidden-text${textId}`);
+      const button = event.target;
+
+      // Toggle text visibility
+      if (text.style.display === 'none') {
+        text.style.display = 'block';
+        button.querySelector('i').classList.remove('fa-plus');
+        button.querySelector('i').classList.add('fa-minus');  // Change to minus icon
+      } else {
+        text.style.display = 'none';
+        button.querySelector('i').classList.remove('fa-minus');
+        button.querySelector('i').classList.add('fa-plus');  // Change to plus icon
+      }
     }
 </script>
-<style>
-    .insertButton {
-    display: block;
-    margin: 10;
-    text-align: center;
-    padding: 5px 5px;
-    font-size: 16px;
-    cursor: pointer;
-      background-color: rgba(112, 113, 113, 0.2);
-      color: rgba(112, 113, 113, 0.9);
-
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-    height: 100vh;
-}
-</style>
 <body lang="he" dir="rtl">
 <div class="header">
     <div class="dropdown">
@@ -179,10 +170,10 @@
 <h1>וְלִירוּשָׁלַ͏ִם עִירְךָֽ בְּרַחֲמִֽים תָּשֽׁוּב, וְתִשְׁכּֽוֹן בְּתוֹכָֽהּ כַּאֲשֶֽׁר דִּבַּֽרְתָּ, וְכִסֵּֽא דָוִֽד עַבְדְּךָֽ מְהֵרָֽה בְּתוֹכָֽהּ תָּכִֽין, וּבְנֵֽה אוֹתָֽהּ בְּקָרֽוֹב בְּיָמֵֽינוּ בִּנְיַֽן עוֹלָֽם.</h1>
 
 <div class="container">
-    <button onclick="toggleText()" class="insertButton">במנחת תשעה באב</button>
+    <button onclick="toggleText(1)" class="insertButton"><i class="fas fa-plus"></i>במנחת תשעה באב</button>
 </div>
 
-<div id="hidden-text" style="display: none; direction: rtl;">
+<div id="hidden-text1" style="display: none; direction: rtl;">
     <h3>    נַחֵם יְיָ אֱלֹהֵֽינוּ, אֶת־אֲבֵלֵי צִיּוֹן, וְאֶת־אֲבֵלֵי יְרוּשָׁלָֽיִם.
         וְאֶת־הָעִיר הָאֲבֵלָה וְהַחֲרֵבָה, וְהַבְּזוּיָה וְהַשּׁוֹמֵמָה.
         הָאֲבֵלָה מִבְּלִי בָנֶֽיהָ, וְהַחֲרֵבָה מִמְּעוֹנוֹתֶֽיהָ, וְהַבְּזוּיָה מִכְּבוֹדָהּ,
@@ -258,10 +249,10 @@
 <div id="section4" class="section"><h2>{{avinu_malkeinu}}</h2></div>
 
 <div class="container">
-    <button onclick="toggleText()" class="insertButton">אבינו מלכנו שלם</button>
+    <button onclick="toggleText(2)" class="insertButton">אבינו מלכנו שלם</button>
 </div>
 
-<div id="hidden-text1" style="display: none; direction: rtl;">
+<div id="hidden-text2" style="display: none; direction: rtl;">
 
     <h3 class="hint">בתענית ציבור ובעשי״ת אומרים כאן אבינו מלכנו.</h3>
     <h1>אָבִֽינוּ מַלְכֵּֽנוּ חָטָֽאנוּ לְפָנֶֽיךָ:</h1>
@@ -335,10 +326,10 @@
 
 
 <div class="container">
-    <button onclick="toggleText()" class="insertButton">לדוד</button>
+    <button onclick="toggleText(3)" class="insertButton">לדוד</button>
 </div>
 
-<div id="hidden-text2" style="display: none; direction: rtl;">
+<div id="hidden-text3" style="display: none; direction: rtl;">
     <h3>מר״ח אלול עד הושענא רבא אומרים כאן:</h3>
     <h1>לְדָוִד יְיָ אוֹרִי וְיִשְׁעִי מִמִּי אִירָא, יְיָ מָעוֹז־חַיַּי מִמִּי אֶפְחָד: בִּקְרֹב עָלַי מְרֵעִים לֶאֱכֹל אֶת־בְּשָׂרִי צָרַי וְאֹיְבַי לִי, הֵֽמָּה כָשְׁלוּ וְנָפָֽלוּ: אִם־תַּחֲנֶה עָלַי מַחֲנֶה לֺא־יִירָא לִבִּי, אִם־תָּקוּם עָלַי מִלְחָמָה, בְּזֹאת אֲנִי בוֹטֵֽחַ: אַחַת שָׁאַֽלְתִּי מֵאֵת־יְיָ אוֹתָהּ אֲבַקֵּשׁ, שִׁבְתִּי בְּבֵית־יְיָ כָּל־יְמֵי חַיַּי, לַחֲזוֹת בְּנֹֽעַם־יְיָ וּלְבַקֵּר בְּהֵיכָלוֹ: כִּי יִצְפְּנֵֽנִי בְּסֻכֹּה בְּיוֹם רָעָה יַסְתִּרֵֽנִי בְּסֵֽתֶר אָהֳלוֹ, בְּצוּר יְרוֹמְמֵֽנִי: וְעַתָּה יָרוּם רֹאשִׁי עַל אֹיְבַי סְבִיבוֹתָי, וְאֶזְבְּחָה בְאָהֳלוֹ זִבְחֵי תְרוּעָה, אָשִֽׁירָה וַאֲזַמְּרָה לַייָ: שְׁמַע־יְיָ קוֹלִי אֶקְרָא, וְחָנֵּֽנִי וַעֲנֵֽנִי: לְךָ אָמַר לִבִּי, בַּקְּשׁוּ פָנָי, אֶת־פָּנֶֽיךָ יְיָ אֲבַקֵּשׁ: אַל־תַּסְתֵּר פָּנֶֽיךָ מִמֶּֽנִּי, אַל תַּט־בְּאַף עַבְדֶּֽךָ עֶזְרָתִי הָיִֽיתָ, אַל־תִּטְּשֵֽׁנִי וְאַל־תַּעַזְבֵֽנִי אֱלֺהֵי יִשְׁעִי: כִּי־אָבִי וְאִמִּי עֲזָבֽוּנִי, וַייָ יַאַסְפֵֽנִי: הוֹרֵֽנִי יְיָ דַּרְכֶּֽךָ וּנְחֵֽנִי בְּאֹֽרַח מִישׁוֹר, לְמַֽעַן שׁוֹרְרָי: אַל־תִּתְּנֵֽנִי בְּנֶֽפֶשׁ צָרָי, כִּי קָֽמוּ־בִי עֵֽדֵי־שֶֽׁקֶר וִיפֵֽחַ חָמָס: לוּלֵא הֶאֱמַֽנְתִּי לִרְאוֹת בְּטוּב־יְיָ בְּאֶֽרֶץ חַיִּים: קַוֵּה אֶל־יְיָ, חֲזַק וְיַאֲמֵץ לִבֶּךָ, וְקַוֵּה אֶל־יְיָ:</h1>
 </div>
@@ -353,4 +344,8 @@
 <h1>עֹשֶֽׂה שָׁלֽוֹם <span dir="rtl" class="insert"> (בעשי״ת הַשָּׁלוֹם) </span> בִּמְרוֹמָֽיו הוּא יַעֲשֶֽׂה שָׁלֽוֹם עָלֵֽינוּ וְעַל כָּל־יִשְׂרָאֵֽל וְאִמְרֽוּ אָמֵֽן:</h1>
 
 <h1>אַל־תִּירָא מִפַּחַד פִּתאֹם, וּמִשֹׁאַת רְשָׁעִים כִּי תָבֹא: עֻֽצוּ עֵצָה וְתֻפָר, דַּבְּרוּ דָבָר וְלֹא יָקוּם כִּי עִמָּנוּ אֵל: וְעַד זִקְנָה אֲנִי הוּא, וְעַד שֵׂיבָה אֲנִי אֶסְבֹּל: אֲנִי עָשִֽׂיתִי וַאֲנִי אֶשָׂא וַאֲנִי אֶסְבֹּל וַאֲמַלֵּט: אַךְ צַדִּיקִים יוֹדוּ לִשְׁמֶךָ יֵשְׁבוּ יְשָׁרִים אֶת־פָּנֶיךָ׃</h1>
+<br>
+<br>
+<br>
+<br>
 </body>
