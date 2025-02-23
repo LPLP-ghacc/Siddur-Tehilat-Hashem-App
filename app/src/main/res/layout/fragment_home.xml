@@ -44,17 +44,7 @@
                         android:text="SAMPLE TEXT"
                         android:textSize="30dp"/>
 
-                    <TextView
-                        android:id="@+id/holidaycalendar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="SAMPLE TEXT"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:textSize="20dp" />
-
                 </LinearLayout>
-
                 <!-- List of blesses -->
                 <TextView
                     android:layout_width="match_parent"
@@ -75,42 +65,18 @@
 
                 </ListView>
 
-                <!--
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:text="@string/mincha">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/actual_events"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-</TextView>
+                </androidx.recyclerview.widget.RecyclerView>
 
-
-<ListView
-    android:id="@+id/minhaList"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@android:color/darker_gray"
-    android:dividerHeight="1dp">
-
-</ListView>
-
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:text="@string/maariv">
-
-</TextView>
-
-<ListView
-    android:id="@+id/maarivList"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@android:color/darker_gray"
-    android:dividerHeight="1dp">
-
-</ListView>
--->
 </LinearLayout>
 </ScrollView>
 

@@ -54,4 +54,9 @@
     <string name="pesach">Песах</string>
     <string name="shavuot">Шавуот</string>
     <string name="Purim">Пурим</string>
+    <string name="actual_events">Актуальные события:</string>
+    <string name="BlessingLanguage">Язык молитвы</string>
+    <string name="TextSize">Размер шрифта</string>
+    <string name="Theme">Тема</string>
+    <string name="upcoming_holidays">Ближайшие праздники</string>
 </resources>

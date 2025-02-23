@@ -3,8 +3,6 @@ package com.tehilat.sidur;
 import java.util.Calendar;
 
 public class JewishHolidayHelper {
-
-    // Массив праздников в формате {месяц, день, название}
     private static final Holiday[] holidays = {
             new Holiday(1, 1, "Rosh Hashanah"),
             new Holiday(1, 10, "Yom Kippur"),
@@ -15,7 +13,7 @@ public class JewishHolidayHelper {
             new Holiday(12, 14, "Purim")
     };
 
-    // Метод: проверка, есть ли сегодня праздник, и возвращение его названия
+    // Проверка, есть ли сегодня праздник, и возвращение его названия
     public static String getCurrentHoliday(int currentMonth, int currentDay) {
         for (Holiday holiday : holidays) {
             if (holiday.month == currentMonth && holiday.day == currentDay) {
@@ -25,7 +23,7 @@ public class JewishHolidayHelper {
         return "nohol";
     }
 
-    // Метод: сколько дней до следующего праздника и его название
+    // Сколько дней до следующего праздника и его название
     public static NextHolidayInfo daysUntilNextHoliday(int currentMonth, int currentDay) {
         Calendar today = Calendar.getInstance();
         today.set(Calendar.MONTH, currentMonth - 1); // Java-календари используют индексацию месяцев с 0

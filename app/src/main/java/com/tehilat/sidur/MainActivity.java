@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView botNav;
     HomeFragment home = new HomeFragment();
     DailyFragment daily = new DailyFragment();
+    SettingsFragment settings = new SettingsFragment();
+    UpcomingHolidaysFragment holidays = new UpcomingHolidaysFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,33 +50,31 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        botNav = (BottomNavigationView) findViewById(R.id.bottom_nav);
+        botNav = findViewById(R.id.bottom_nav);
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainSidur, home)
                 .commit();
 
-        botNav.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-
-                if(item.getItemId() == R.id.home){
-                    selectedFragment = home;
-                } else if (item.getItemId() == R.id.daily) {
-                    selectedFragment = daily;
-                }
-
-                if (selectedFragment != null) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.mainSidur, selectedFragment);
-                    transaction.commit();
-                    return true;
-                }
-
-                return false;
+        botNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            if (item.getItemId() == R.id.home) {
+                selectedFragment = home;
+            } else if (item.getItemId() == R.id.daily) {
+                selectedFragment = daily;
+            } else if (item.getItemId() == R.id.holidays) { // Новый пункт
+                selectedFragment = holidays;
+            } else if (item.getItemId() == R.id.settings) {
+                selectedFragment = settings;
             }
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.mainSidur, selectedFragment)
+                        .commit();
+                return true;
+            }
+            return false;
         });
     }
 }
