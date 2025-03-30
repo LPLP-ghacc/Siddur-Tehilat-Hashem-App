@@ -59,4 +59,6 @@
     <string name="TextSize">Размер шрифта</string>
     <string name="Theme">Тема</string>
     <string name="upcoming_holidays">Ближайшие праздники</string>
+    <string name="travel">Дорожная молитва</string>
+    <string name="kriat_shema">Шма перед сном</string>
 </resources>
