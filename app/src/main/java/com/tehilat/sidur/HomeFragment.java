@@ -181,6 +181,8 @@ public class HomeFragment extends Fragment {
                 getResources().getString(R.string.maariv),
                 getResources().getString(R.string.tehilim),
                 getResources().getString(R.string.birkathamazon),
+                getResources().getString(R.string.travel),
+                getResources().getString(R.string.kriat_shema),
         };
 
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, morningPrayers);
@@ -205,6 +207,7 @@ public class HomeFragment extends Fragment {
             case "English": langCode = "en"; break;
             case "עברית": langCode = "he"; break;
             case "Français": langCode = "fr"; break;
+            case "Русский (транслит.)": langCode = "ru_tr"; break;
             case "Русский": default: langCode = "ru"; break;
         }
 
@@ -215,6 +218,8 @@ public class HomeFragment extends Fragment {
             case 2: filePath = "file:///android_asset/pages/" + langCode + "/Maariv.html"; break;
             case 3: filePath = "file:///android_asset/tegilim/" + langCode + "/tegilim.html"; break;
             case 4: filePath = "file:///android_asset/pages/" + langCode + "/BirkatHamazon.html"; break;
+            case 5: filePath = "file:///android_asset/pages/" + langCode + "/Travel.html"; break;
+            case 6: filePath = "file:///android_asset/pages/" + langCode + "/Bedtime Shema.html"; break;
             default: filePath = "file:///android_asset/default.html"; break;
         }
         Log.d("FilePath", "Loading file: " + filePath);

@@ -23,7 +23,7 @@ public class SettingsFragment extends Fragment {
 
         // Язык молитвы
         Spinner languageSpinner = rootView.findViewById(R.id.language_spinner);
-        String[] languages = {"Русский", "English", "עברית", "Français"};
+        String[] languages = {"Русский", "Русский (транслит.)", "English", "עברית", "Français"};
         ArrayAdapter<String> langAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, languages);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(langAdapter);

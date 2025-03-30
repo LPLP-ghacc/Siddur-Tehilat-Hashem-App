@@ -59,4 +59,6 @@
     <string name="TextSize">Text size</string>
     <string name="Theme">Theme</string>
     <string name="upcoming_holidays">Upcoming holidays</string>
+    <string name="travel">Traveler\'s Prayer</string>
+    <string name="kriat_shema">Bedtime Shema</string>
 </resources>
