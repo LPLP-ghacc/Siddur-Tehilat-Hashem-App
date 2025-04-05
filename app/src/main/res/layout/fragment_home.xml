@@ -7,14 +7,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
         tools:visibility="visible">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/app_name">
 
             <LinearLayout
@@ -35,14 +35,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SAMPLE TEXT"
-                        android:textSize="30dp"/>
+                        android:textSize="30dp" />
 
                     <TextView
                         android:id="@+id/gregoriandate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SAMPLE TEXT"
-                        android:textSize="30dp"/>
+                        android:textSize="30dp" />
 
                 </LinearLayout>
                 <!-- List of blesses -->
@@ -65,21 +65,29 @@
 
                 </ListView>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/actual_events"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:orientation="vertical">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/actual_events" />
 
-</LinearLayout>
-</ScrollView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:isScrollContainer="false">
 
-</LinearLayout>
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 
 </FrameLayout>

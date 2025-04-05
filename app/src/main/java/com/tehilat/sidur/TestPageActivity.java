@@ -137,6 +137,9 @@ public class TestPageActivity extends AppCompatActivity {
         placeholders.put("{{psalm}}", getString(R.string.psalm));
         placeholders.put("{{hazan}}", getString(R.string.hazan));
         placeholders.put("{{community}}", getString(R.string.community));
+        placeholders.put("{{travel}}", getString(R.string.travel));
+        placeholders.put("{{kriat_shema}}", getString(R.string.kriat_shema));
+
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             htmlContent = htmlContent.replace(entry.getKey(), entry.getValue());

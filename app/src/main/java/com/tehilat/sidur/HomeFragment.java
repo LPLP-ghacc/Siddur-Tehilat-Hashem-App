@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,7 +65,16 @@ public class HomeFragment extends Fragment {
 
     private void setupRecyclerView(@NonNull View rootView) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+
+        // Добавляем разделитель между элементами (опционально)
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         adapter = new EventsAdapter(null);
         recyclerView.setAdapter(adapter);
@@ -83,6 +93,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchEvents() {
+        // НЕ ЗАБЫТЬ ПОТОМ СДЕЛАТЬ ОТНОСИТЕЛЬНО ВСЕХ ЯЗЫКОВ
         String queryParams = "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&geo=geoname&geonameid=3448439&lg=RU";
         ApiClient.fetchHebcalData(queryParams, new ApiClient.ApiResponseCallback() {
             @Override
@@ -140,7 +151,7 @@ public class HomeFragment extends Fragment {
                             }
                         })
                         .filter(Objects::nonNull)
-                        .limit(10)  // Покажем хотя бы 10 событий
+                        .limit(7)
                         .toList();
             }
         }
