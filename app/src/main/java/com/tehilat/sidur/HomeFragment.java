@@ -220,6 +220,7 @@ public class HomeFragment extends Fragment {
             case 4: filePath = "file:///android_asset/pages/" + langCode + "/BirkatHamazon.html"; break;
             case 5: filePath = "file:///android_asset/pages/" + langCode + "/Travel.html"; break;
             case 6: filePath = "file:///android_asset/pages/" + langCode + "/Bedtime Shema.html"; break;
+            case 7: filePath = "file:///android_asset/pages/" + langCode + "/Nasi.html"; break;
             default: filePath = "file:///android_asset/default.html"; break;
         }
         Log.d("FilePath", "Loading file: " + filePath);
