@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-    <color name="light_orange">#FFF3E0</color>
-    <color name="orange">#E65100</color>
-    <color name="white">#FFFFFF</color>
-    <color name="bg_white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="bg_black">#000000</color>
-    <color name="gray">#666666</color>
+    <color name="text1" />
+    <color name="text2" />
+    <color name="text3" />
+    <color name="text4" />
+    <color name="bg1" />
+    <color name="bg2" />
+    <color name="bg3" />
+    <color name="card_gradient_start" />
+    <color name="card_gradient_end" />
 </resources>

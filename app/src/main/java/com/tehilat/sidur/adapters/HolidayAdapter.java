@@ -1,5 +1,6 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.adapters;
 
+import android.content.Context;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,27 +8,31 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tehilat.sidur.calendar.JewishController;
+import com.tehilat.sidur.R;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayViewHolder> {
 
-    private List<JewishСontroller.Item> holidays;
+    private List<JewishController.Item> holidays;
     private static final int MAX_EVENTS = 20; // Максимум 20 событий
 
-    public HolidayAdapter(List<JewishСontroller.Item> holidays) {
-        // Ограничиваем список до 20 элементов
+    public HolidayAdapter(List<JewishController.Item> holidays) {
         this.holidays = new ArrayList<>();
         if (holidays != null) {
             this.holidays.addAll(holidays.subList(0, Math.min(holidays.size(), MAX_EVENTS)));
         }
     }
 
-    public void updateHolidays(List<JewishСontroller.Item> newHolidays) {
+    public void updateHolidays(List<JewishController.Item> newHolidays) {
         this.holidays.clear();
         if (newHolidays != null) {
             this.holidays.addAll(newHolidays.subList(0, Math.min(newHolidays.size(), MAX_EVENTS)));
@@ -45,11 +50,14 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayV
 
     @Override
     public void onBindViewHolder(@NonNull HolidayViewHolder holder, int position) {
-        JewishСontroller.Item holiday = holidays.get(position);
+        JewishController.Item holiday = holidays.get(position);
 
         // Устанавливаем заголовок и текст на иврите (с проверкой на null)
         holder.titleTextView.setText(holiday.getTitle() != null ? holiday.getTitle() : "");
         holder.hebrewTextView.setText(holiday.getHebrew() != null ? holiday.getHebrew() : "");
+
+        // Получаем контекст для доступа к ресурсам
+        Context context = holder.itemView.getContext();
 
         // Обрабатываем дату
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -59,33 +67,33 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayV
                 LocalDate today = LocalDate.now();
 
                 // Форматируем дату события
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("ru"));
                 holder.dateTextView.setText(eventDate.format(formatter));
 
                 // Проверяем, является ли событие текущим
                 if (eventDate.equals(today)) {
-                    holder.itemView.setBackgroundColor(0xFFFFF3E0); // Светло-оранжевый фон
-                    holder.titleTextView.setTextColor(0xFFE65100); // Оранжевый текст
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg3));
+                    holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text1));
                     holder.dateTextView.setText("Сегодня");
-                    holder.dateTextView.setTextColor(0xFFE65100); // Оранжевый текст
+                    holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text1));
                 } else {
-                    holder.itemView.setBackgroundColor(0xFFFFFFFF); // Белый фон
-                    holder.titleTextView.setTextColor(0xFF000000); // Черный текст
-                    holder.dateTextView.setTextColor(0xFF666666); // Серый текст
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+                    holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
+                    holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
                 }
             } catch (Exception e) {
                 // Если не удалось распарсить дату, показываем заглушку
                 holder.dateTextView.setText("Дата неизвестна");
-                holder.itemView.setBackgroundColor(0xFFFFFFFF); // Белый фон
-                holder.titleTextView.setTextColor(0xFF000000); // Черный текст
-                holder.dateTextView.setTextColor(0xFF666666); // Серый текст
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+                holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
+                holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
             }
         } else {
             // Для старых версий Android показываем дату без форматирования
             holder.dateTextView.setText(holiday.getDate() != null ? holiday.getDate() : "Дата неизвестна");
-            holder.itemView.setBackgroundColor(0xFFFFFFFF); // Белый фон
-            holder.titleTextView.setTextColor(0xFF000000); // Черный текст
-            holder.dateTextView.setTextColor(0xFF666666); // Серый текст
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+            holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
+            holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
         }
     }
 

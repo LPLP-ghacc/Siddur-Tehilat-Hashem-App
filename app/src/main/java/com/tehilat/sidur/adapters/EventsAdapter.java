@@ -1,5 +1,6 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.adapters;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tehilat.sidur.calendar.JewishController;
+import com.tehilat.sidur.R;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
-    private List<JewishСontroller.Item> events;
+    private List<JewishController.Item> events;
 
-    public EventsAdapter(List<JewishСontroller.Item> events) {
+    public EventsAdapter(List<JewishController.Item> events) {
         this.events = events != null ? events : new java.util.ArrayList<>();
     }
 
-    public void setEvents(List<JewishСontroller.Item> newEvents) {
+    @SuppressLint("NotifyDataSetChanged")
+    public void setEvents(List<JewishController.Item> newEvents) {
         this.events = newEvents != null ? newEvents : new java.util.ArrayList<>();
         notifyDataSetChanged();
     }
@@ -36,7 +41,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        JewishСontroller.Item event = events.get(position);
+        JewishController.Item event = events.get(position);
         holder.titleTextView.setText(event.getTitle());
 
         // Форматируем дату
