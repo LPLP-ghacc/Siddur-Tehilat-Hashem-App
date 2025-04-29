@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -38,12 +37,10 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private SharedPreferences prefs;
-
-    private ListView morningList;
+    private ListView prayersList;
     private TextView jewishCalendar;
     private TextView gregorianCalendar;
     private TextView holidayTextField;
-
     private EventsViewModel eventsViewModel;
     private EventsAdapter adapter;
 
@@ -173,7 +170,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initListViews(@NonNull View rootView) {
-        morningList = rootView.findViewById(R.id.morningList);
+        prayersList = rootView.findViewById(R.id.morningList);
 
         String[] morningPrayers = {
                 getResources().getString(R.string.shararit),
@@ -186,20 +183,21 @@ public class HomeFragment extends Fragment {
         };
 
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, morningPrayers);
-        morningList.setAdapter(adapterShahar);
+        prayersList.setAdapter(adapterShahar);
 
-        morningList.setOnItemClickListener((parent, view, position, id) -> {
+        prayersList.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getActivity(), TestPageActivity.class);
-            intent.putExtra("filePath", getMorningPrayerFilePath(position));
+            intent.putExtra("filePath", getPrayerFilePath(position));
             startActivity(intent);
         });
 
-        setListViewHeightBasedOnChildren(morningList);
+        setListViewHeightBasedOnChildren(prayersList);
     }
 
     @NonNull
     @Contract(pure = true)
-    private String getMorningPrayerFilePath(int position) {
+    private String getPrayerFilePath(int position) {
+        // переделать под автоматически
         String lang = prefs.getString("prayer_language", "Русский");
         String langCode;
 

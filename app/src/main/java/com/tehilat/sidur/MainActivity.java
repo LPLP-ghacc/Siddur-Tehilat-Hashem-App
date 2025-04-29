@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView botNav;
     HomeFragment home = new HomeFragment();
     DailyFragment daily = new DailyFragment();
-    SettingsFragment settings = new SettingsFragment();
     UpcomingHolidaysFragment holidays = new UpcomingHolidaysFragment();
+    SettingsFragment settings = new SettingsFragment();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = home;
             } else if (item.getItemId() == R.id.daily) {
                 selectedFragment = daily;
-            } else if (item.getItemId() == R.id.holidays) { // Новый пункт
+            } else if (item.getItemId() == R.id.holidays) {
                 selectedFragment = holidays;
             } else if (item.getItemId() == R.id.settings) {
                 selectedFragment = settings;
