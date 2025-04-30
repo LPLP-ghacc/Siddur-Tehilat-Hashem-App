@@ -49,15 +49,9 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private SharedPreferences prefs;
-<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
-    private ListView prayersList;
-    private TextView jewishCalendar;
-    private TextView gregorianCalendar;
-    private TextView holidayTextField;
-=======
+
 
     // класс представления событий
->>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
     private EventsViewModel eventsViewModel;
     private EventsAdapter adapter;
 
@@ -160,11 +154,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void initListViews(@NonNull View rootView) {
-<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
-        prayersList = rootView.findViewById(R.id.morningList);
-=======
+
         ListView morningList = rootView.findViewById(R.id.dailyList);
->>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
 
         String[] morningPrayers = {
                 getResources().getString(R.string.shararit),
@@ -177,21 +168,16 @@ public class HomeFragment extends Fragment {
         };
 
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, morningPrayers);
-        prayersList.setAdapter(adapterShahar);
+        morningList.setAdapter(adapterShahar);
 
-<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
-        prayersList.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(getActivity(), TestPageActivity.class);
-            intent.putExtra("filePath", getPrayerFilePath(position));
-=======
+
         morningList.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getActivity(), ViewerPageActivity.class);
-            intent.putExtra("filePath", getMorningPrayerFilePath(position));
->>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
+            intent.putExtra("filePath", getPrayerFilePath(position));
             startActivity(intent);
         });
 
-        setListViewHeightBasedOnChildren(prayersList);
+        setListViewHeightBasedOnChildren(morningList);
     }
 
     @NonNull
