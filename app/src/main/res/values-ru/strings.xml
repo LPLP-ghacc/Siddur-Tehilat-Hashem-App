@@ -70,4 +70,16 @@
     <string name="about_app_title">О приложении</string>
     <string name="about_app_text">Это приложение создано для помощи в чтении молитв. Версия 1.0. Разработано с заботой о пользователях.</string>
     <string name="donate_button">Цдака</string>
+    <string name="show_all">Показать все</string>
+    <string name="show_less">Скрыть</string>
+    <string name="more_events">и еще %d событий</string>
+    <string name="compass_button">Компасс</string>
+    <string name="compass_title">Компас на Стену Плача</string>
+    <string name="compass_description">Изображение компаса</string>
+    <string name="direction_to_wailing_wall">Направление на Стену Плача</string>
+    <string name="candle_lighting_placeholder">Зажигание свечей: загрузка...</string>
+    <string name="havdalah_placeholder">Хавдала: загрузка...</string>
+    <string name="candle_lighting_format">Зажигание свечей: %s</string>
+    <string name="havdalah_format">Хавдала: %s</string>
+    <string name="shabbat_times">Время Шаббата</string>
 </resources>

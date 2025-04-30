@@ -70,4 +70,20 @@
     <string name="about_app_title">About App</string>
     <string name="about_app_text">This app is designed to help you read prayers. Version 1.0. Developed with care for users.</string>
     <string name="donate_button">Tzedakah</string>
+
+    <string name="show_all">Show all</string>
+    <string name="show_less">Show less</string>
+    <string name="more_events">and another %d</string>
+
+    <string name="compass_button">Сompass</string>
+
+    <string name="compass_title">Compass on the Wailing Wall</string>
+    <string name="compass_description">Compass Image</string>
+    <string name="direction_to_wailing_wall">The direction to the Wailing Wall</string>
+    <string name="shabbat_times">Shabbat Time</string>
+    <string name="candle_lighting_placeholder">Candle lighting: loading...</string>
+    <string name="havdalah_placeholder">Havdalah: download...</string>
+    <string name="candle_lighting_format">Spark plug ignition: %s</string>
+    <string name="havdalah_format">Havdalah: %s</string>
+
 </resources>

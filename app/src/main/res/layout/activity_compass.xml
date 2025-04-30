@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg1"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/compass_title"
+        android:textColor="@color/text4"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <ImageView
+        android:id="@+id/compass_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/compass_arrow"
+        android:contentDescription="@string/compass_description" />
+
+    <TextView
+        android:id="@+id/direction_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/direction_to_wailing_wall"
+        android:textColor="@color/text4"
+        android:textSize="18sp" />
+
+</LinearLayout>

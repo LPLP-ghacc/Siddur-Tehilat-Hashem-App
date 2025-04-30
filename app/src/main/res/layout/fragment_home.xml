@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment"
-    android:background="@color/bg1"
-    >
+    android:background="@color/bg1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,10 +26,8 @@
                 android:orientation="vertical">
 
                 <!-- INFO BLOCK -->
-
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/CardStyle"
                     android:orientation="vertical"
                     tools:ignore="UselessLeaf">
 
@@ -41,7 +38,7 @@
                         android:text="SAMPLE TEXT"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/text4"
-                        android:textSize="30dp" />
+                        android:textSize="30sp" />
 
                     <TextView
                         android:id="@+id/gregoriandate"
@@ -50,62 +47,169 @@
                         android:text="SAMPLE TEXT"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/text4"
-                        android:textSize="30dp" />
+                        android:textSize="30sp" />
 
                     <ImageView
                         android:id="@+id/separator1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:src="@drawable/separator" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/shabbat_times"
+                        android:textColor="@color/text4"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🕯️"
+                            android:textSize="24sp"
+                            android:layout_marginEnd="8dp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/candle_lighting_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/candle_lighting_placeholder"
+                            android:textColor="@color/text4"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌙"
+                        android:textSize="24sp"
+                        android:layout_marginEnd="8dp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/havdalah_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/havdalah_placeholder"
+                            android:textColor="@color/text4"
+                            android:textSize="16sp" />
+                    </LinearLayout>
                 </LinearLayout>
-                <!-- List of main blesses -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/daily"
-                    android:textColor="@color/text4">
 
-                </TextView>
-
-                <ListView
-                    android:id="@+id/dailyList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    android:divider="@android:color/darker_gray"
-                    android:dividerHeight="1dp"
-                    android:padding="0dp"
-                    tools:ignore="NestedScrolling">
-
-                </ListView>
-
+                <!-- List of daily blessings -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/CardStyle"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/actual_events"
-                        android:textColor="@color/text4" />
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/daily"
+                        android:textColor="@color/text4"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/actualEventsRecyclerView"
+                    <ListView
+                        android:id="@+id/dailyList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:isScrollContainer="false">
+                        android:divider="@android:color/darker_gray"
+                        android:dividerHeight="1dp"
+                        android:padding="0dp"
+                        tools:ignore="NestedScrolling" />
+                </LinearLayout>
 
-                    </androidx.recyclerview.widget.RecyclerView>
+                <!-- Actual Events -->
+                <LinearLayout
+                    style="@style/CardStyle"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/actual_events"
+                        android:textColor="@color/text4"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/events_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/actualEventsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:isScrollContainer="false"
+                            android:nestedScrollingEnabled="false"
+                            android:clipToPadding="false" />
+
+                        <TextView
+                            android:id="@+id/more_events_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:textAlignment="center"
+                            android:visibility="gone"
+                            tools:text="и еще 5 событий" />
+
+                        <Button
+                            android:id="@+id/show_all_button"
+                            style="@style/ButtonStyle"
+                            android:text="@string/show_all"
+                            android:drawableEnd="@android:drawable/ic_menu_more"
+                            android:drawableTint="@color/text4"
+                            android:textColor="@color/text4"
+                            android:paddingEnd="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Compass Button -->
+                <LinearLayout
+                    android:id="@+id/compass_container"
+                    style="@style/CardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/compass_button"
+                        style="@style/ButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableStart="@android:drawable/ic_menu_compass"
+                        android:drawableTint="@color/accent"
+                        android:text="@string/compass_button"
+                        android:textColor="@color/text4"
+                        android:textSize="16sp"
+                        android:drawableEnd="@drawable/baseline_settings_applications_24"/>
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
-
 </FrameLayout>

@@ -6,15 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.tehilat.sidur.calendar.JewishController;
 import com.tehilat.sidur.R;
-
+import com.tehilat.sidur.calendar.JewishController;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
@@ -22,12 +20,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     private List<JewishController.Item> events;
 
     public EventsAdapter(List<JewishController.Item> events) {
-        this.events = events != null ? events : new java.util.ArrayList<>();
+        this.events = events != null ? events : new ArrayList<>();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setEvents(List<JewishController.Item> newEvents) {
-        this.events = newEvents != null ? newEvents : new java.util.ArrayList<>();
+        this.events = newEvents != null ? newEvents : new ArrayList<>();
         notifyDataSetChanged();
     }
 
@@ -48,8 +46,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         LocalDate eventDate = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             eventDate = LocalDate.parse(event.getDate().substring(0, 10));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.dateTextView.setText(eventDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
         }
 
