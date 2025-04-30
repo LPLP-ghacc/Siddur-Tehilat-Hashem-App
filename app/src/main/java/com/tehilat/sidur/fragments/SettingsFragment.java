@@ -1,4 +1,4 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+
+import com.tehilat.sidur.R;
 
 public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;

@@ -1,4 +1,4 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,23 +25,39 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tehilat.sidur.adapters.EventsAdapter;
+import com.tehilat.sidur.models.EventsViewModel;
+import com.tehilat.sidur.api.HebcalApiClient;
+import com.tehilat.sidur.calendar.JewishCalendar;
+import com.tehilat.sidur.calendar.JewishController;
+import com.tehilat.sidur.calendar.JewishHolidayHelper;
+import com.tehilat.sidur.R;
+import com.tehilat.sidur.ViewerPageActivity;
+
 import org.jetbrains.annotations.Contract;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+
 public class HomeFragment extends Fragment {
 
     private SharedPreferences prefs;
+<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
     private ListView prayersList;
     private TextView jewishCalendar;
     private TextView gregorianCalendar;
     private TextView holidayTextField;
+=======
+
+    // класс представления событий
+>>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
     private EventsViewModel eventsViewModel;
     private EventsAdapter adapter;
 
@@ -60,117 +77,94 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView(@NonNull View rootView) {
-        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = rootView.findViewById(R.id.actualEventsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
 
         adapter = new EventsAdapter(null);
         recyclerView.setAdapter(adapter);
 
         eventsViewModel = new ViewModelProvider(requireActivity()).get(EventsViewModel.class);
-
-        eventsViewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
-            if (events != null && !events.isEmpty()) {
-                adapter.setEvents(filterRelevantEvents(events));
-            }
-        });
+        eventsViewModel.getEvents().observe(getViewLifecycleOwner(),
+                events -> adapter.setEvents(events != null && !events.isEmpty() ? filterRelevantEvents(events) : null));
 
         if (eventsViewModel.getEvents().getValue() == null) {
-            fetchEvents();
+            String queryParams = "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&geo=geoname&geonameid=3448439&lg=RU";
+            HebcalApiClient.fetchHebcalData(queryParams, new HebcalApiClient.ApiResponseCallback() {
+                @Override
+                public void onSuccess(JewishController.HebcalResponse response) {
+                    requireActivity().runOnUiThread(() ->
+                            eventsViewModel.setEvents(filterRelevantEvents(response.getItems())));
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), getString(R.string.error_on_load) + errorMessage, Toast.LENGTH_SHORT).show());
+                }
+            });
         }
     }
 
-    private void fetchEvents() {
-        String queryParams = "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&geo=geoname&geonameid=3448439&lg=RU";
-        ApiClient.fetchHebcalData(queryParams, new ApiClient.ApiResponseCallback() {
-            @Override
-            public void onSuccess(JewishСontroller.HebcalResponse response) {
-                requireActivity().runOnUiThread(() -> {
-                    List<JewishСontroller.Item> events = filterRelevantEvents(response.getItems());
-                    eventsViewModel.setEvents(events);
-                });
-            }
+    private List<JewishController.Item> filterRelevantEvents(List<JewishController.Item> events) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return events;
 
-            @Override
-            public void onError(String errorMessage) {
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "Ошибка загрузки: " + errorMessage, Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
-    @Nullable
-    private LocalDate parseEventDate(String dateString) {
-        try {
-            // Попробуем парсить как OffsetDateTime
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return OffsetDateTime.parse(dateString).toLocalDate();
-                }
-            } catch (Exception e) {
-                // Если не получилось, то просто парсим как LocalDate
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return LocalDate.parse(dateString);
-                }
-            }
-        } catch (Exception e) {
-            Log.d("DateParser", "Failed to parse date: " + dateString);
-            return null;
-        }
-        return null;
-    }
-
-    private List<JewishСontroller.Item> filterRelevantEvents(List<JewishСontroller.Item> events) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d("EventFilter", "Received events count: " + events.size());
-
-            LocalDate today = LocalDate.now();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                return events.stream()
-                        .map(event -> {
-                            LocalDate eventDate = parseEventDate(event.getDate());
-                            if (eventDate != null) {
-                                Log.d("EventFilter", "Event: " + event.getTitle() + " | Date: " + eventDate);
-                                return eventDate.isBefore(today) ? null : event;
-                            } else {
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .limit(10)  // Покажем хотя бы 10 событий
-                        .toList();
-            }
+        LocalDate today = LocalDate.now();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return events.stream()
+                    .map(event -> {
+                        LocalDate eventDate = parseEventDate(event.getDate());
+                        return eventDate != null && !eventDate.isBefore(today) ? event : null;
+                    })
+                    .filter(Objects::nonNull)
+                    .limit(7)
+                    .toList();
         }
         return events;
     }
 
+    @Nullable
+    private LocalDate parseEventDate(String dateString) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || dateString == null) return null;
+
+        try {
+            try {
+                return OffsetDateTime.parse(dateString).toLocalDate();
+            } catch (DateTimeParseException e) {
+                return LocalDate.parse(dateString);
+            }
+        } catch (DateTimeParseException e) {
+            Log.d("DateParser", "Failed to parse date: " + dateString);
+            return null;
+        }
+    }
+
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     private void initDateHelper(View rootView) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDateTime now = LocalDateTime.now();
-            CalendarImpl impl = new CalendarImpl();
+            JewishCalendar.CalendarImpl impl = new JewishCalendar.CalendarImpl();
 
             JewishCalendar jc = JewishCalendar.gregorianToJewish(new JewishCalendar(now.getDayOfMonth(), now.getMonthValue(), now.getYear()), impl);
-            jewishCalendar = rootView.findViewById(R.id.jewishdate);
+            TextView jewishCalendar = rootView.findViewById(R.id.jewishdate);
             jewishCalendar.setText(jc.getDay() + " " + JewishCalendar.getJewishMonthName(jc) + " " + jc.getYear());
 
             String currentHoliday = JewishHolidayHelper.getCurrentHoliday(jc.getMonth(), jc.getDay());
             if (Objects.equals(currentHoliday, "nohol")) {
                 currentHoliday = getResources().getString(R.string.noholidays);
             }
-
-            // потом...
-//            JewishHolidayHelper.NextHolidayInfo nextHoliday = JewishHolidayHelper.daysUntilNextHoliday(jc.getMonth(), jc.getDay());
-//            holidayTextField = rootView.findViewById(R.id.holidaycalendar);
-//            holidayTextField.setText(getResources().getString(R.string.todayis) + " " + currentHoliday + ", " +
-//                    getResources().getString(R.string.in) + " " + nextHoliday.daysUntil + " " + getResources().getString(R.string.days) + " " + nextHoliday.name);
         }
 
-        gregorianCalendar = rootView.findViewById(R.id.gregoriandate);
+        TextView gregorianCalendar = rootView.findViewById(R.id.gregoriandate);
         gregorianCalendar.setText(new SimpleDateFormat("dd MMMM yyyy").format(new Date()));
     }
 
     private void initListViews(@NonNull View rootView) {
+<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
         prayersList = rootView.findViewById(R.id.morningList);
+=======
+        ListView morningList = rootView.findViewById(R.id.dailyList);
+>>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
 
         String[] morningPrayers = {
                 getResources().getString(R.string.shararit),
@@ -185,9 +179,15 @@ public class HomeFragment extends Fragment {
         ArrayAdapter<String> adapterShahar = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, morningPrayers);
         prayersList.setAdapter(adapterShahar);
 
+<<<<<<< HEAD:app/src/main/java/com/tehilat/sidur/HomeFragment.java
         prayersList.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(getActivity(), TestPageActivity.class);
             intent.putExtra("filePath", getPrayerFilePath(position));
+=======
+        morningList.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(getActivity(), ViewerPageActivity.class);
+            intent.putExtra("filePath", getMorningPrayerFilePath(position));
+>>>>>>> origin/main:app/src/main/java/com/tehilat/sidur/fragments/HomeFragment.java
             startActivity(intent);
         });
 

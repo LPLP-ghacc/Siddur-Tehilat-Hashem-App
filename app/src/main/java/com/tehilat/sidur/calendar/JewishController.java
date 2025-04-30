@@ -1,8 +1,8 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.calendar;
 
 import java.util.List;
 
-public class JewishСontroller {
+public class JewishController {
     public class HebcalResponse {
         private String title;
         private String date;
@@ -51,7 +51,7 @@ public class JewishСontroller {
         }
     }
 
-    public class Location {
+    public static class Location {
         private String title;
         private String city;
         private String tzid;
@@ -108,7 +108,7 @@ public class JewishСontroller {
         }
     }
 
-    public class Range {
+    public static class Range {
         private String start;
         private String end;
 
@@ -186,7 +186,7 @@ public class JewishСontroller {
         }
     }
 
-    public class Leyning {
+    public static class Leyning {
         private String torah;
         private String haftarah;
         private String maftir;

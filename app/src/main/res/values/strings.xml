@@ -61,4 +61,13 @@
     <string name="upcoming_holidays">Upcoming holidays</string>
     <string name="travel">Traveler\'s Prayer</string>
     <string name="kriat_shema">Bedtime Shema</string>
+    <string name="error_on_load">Error on load:</string>
+    <string name="all_prayers">All Prayers</string>
+    <string name="home">Sidur</string>
+    <string name="back_button_description">Back to prayer selection</string>
+    <string name="tdoka">Tzedakah</string>
+    <string name="settings_title">Settings</string>
+    <string name="about_app_title">About App</string>
+    <string name="about_app_text">This app is designed to help you read prayers. Version 1.0. Developed with care for users.</string>
+    <string name="donate_button">Tzedakah</string>
 </resources>

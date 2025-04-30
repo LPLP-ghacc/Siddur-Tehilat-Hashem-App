@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tehilat.sidur.TestPageActivity" />
+        <activity android:name="com.tehilat.sidur.ViewerPageActivity" />
     </application>
 
 </manifest>

@@ -1,0 +1,7 @@
+<bitmap
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:src="@drawable/blesses_black"
+    android:tileMode="disabled"
+    android:gravity="fill_horizontal"
+    tools:ignore="MissingDefaultResource" />

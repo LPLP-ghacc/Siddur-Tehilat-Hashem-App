@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/home"
-        android:title="@string/app_name"
-        android:icon="@drawable/big_button_shape"/>
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:title="@string/home" />
 
     <item android:id="@+id/daily"
-        android:title="@string/daily"
-        android:icon="@color/cardview_dark_background"/>
+        android:title="@string/all_prayers"
+        android:icon="@drawable/blesses" />
 
     <item android:id="@+id/holidays"
         android:title="@string/holidays"
-        android:icon="@color/cardview_dark_background"/>
+        android:icon="@drawable/calendar"/>
 
     <item android:id="@+id/settings"
         android:title="@string/settings"

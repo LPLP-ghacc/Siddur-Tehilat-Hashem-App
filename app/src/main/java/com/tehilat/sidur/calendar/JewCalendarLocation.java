@@ -1,4 +1,4 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.calendar;
 
 public class JewCalendarLocation {
     JewCalendarLocation() {

@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".fragments.HomeFragment"
+    android:background="@color/bg1"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
-        tools:visibility="visible">
+        android:padding="8dp"
+        tools:visibility="visible"
+        tools:ignore="UselessParent">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/app_name">
 
             <LinearLayout
@@ -23,10 +27,10 @@
                 android:orientation="vertical">
 
                 <!-- INFO BLOCK -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
                     android:orientation="vertical"
                     tools:ignore="UselessLeaf">
 
@@ -35,51 +39,73 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SAMPLE TEXT"
-                        android:textSize="30dp"/>
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text4"
+                        android:textSize="30dp" />
 
                     <TextView
                         android:id="@+id/gregoriandate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SAMPLE TEXT"
-                        android:textSize="30dp"/>
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text4"
+                        android:textSize="30dp" />
+
+                    <ImageView
+                        android:id="@+id/separator1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/separator" />
 
                 </LinearLayout>
-                <!-- List of blesses -->
+                <!-- List of main blesses -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@string/daily">
+                    android:text="@string/daily"
+                    android:textColor="@color/text4">
 
                 </TextView>
 
                 <ListView
-                    android:id="@+id/morningList"
+                    android:id="@+id/dailyList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp"
                     android:divider="@android:color/darker_gray"
                     android:dividerHeight="1dp"
-                    android:padding="0dp">
+                    android:padding="0dp"
+                    tools:ignore="NestedScrolling">
 
                 </ListView>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/actual_events"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:orientation="vertical">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="@string/actual_events"
+                        android:textColor="@color/text4" />
 
-</LinearLayout>
-</ScrollView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/actualEventsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:isScrollContainer="false">
 
-</LinearLayout>
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 
 </FrameLayout>

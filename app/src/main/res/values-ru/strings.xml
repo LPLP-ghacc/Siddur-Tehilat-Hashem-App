@@ -61,4 +61,13 @@
     <string name="upcoming_holidays">Ближайшие праздники</string>
     <string name="travel">Дорожная молитва</string>
     <string name="kriat_shema">Шма перед сном</string>
+    <string name="error_on_load">Ошибка при загрузке:</string>
+    <string name="all_prayers">Все молитвы</string>
+    <string name="home">Сидур</string>
+    <string name="back_button_description">Обратно к выбору молитвы</string>
+    <string name="tdoka">Цдака</string>
+    <string name="settings_title">Настройки</string>
+    <string name="about_app_title">О приложении</string>
+    <string name="about_app_text">Это приложение создано для помощи в чтении молитв. Версия 1.0. Разработано с заботой о пользователях.</string>
+    <string name="donate_button">Цдака</string>
 </resources>

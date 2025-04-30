@@ -1,9 +1,12 @@
-package com.tehilat.sidur;
+package com.tehilat.sidur.api;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.tehilat.sidur.calendar.JewishController;
 
 import java.io.IOException;
 
@@ -13,13 +16,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ApiClient {
+public class HebcalApiClient {
 
-    private static final String TAG = "ApiClient";
+    private static final String TAG = "HebcalApiClient";
     private static final String BASE_URL = "https://www.hebcal.com/hebcal";
 
     public interface ApiResponseCallback {
-        void onSuccess(JewishСontroller.HebcalResponse response);
+        void onSuccess(JewishController.HebcalResponse response);
         void onError(String errorMessage);
     }
 
@@ -33,13 +36,13 @@ public class ApiClient {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "Request failed", e);
                 callback.onError(e.getMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     callback.onError("Unexpected code: " + response.code());
                     return;
@@ -50,7 +53,7 @@ public class ApiClient {
 
                 try {
                     Gson gson = new Gson();
-                    JewishСontroller.HebcalResponse hebcalResponse = gson.fromJson(responseBody, JewishСontroller.HebcalResponse.class);
+                    JewishController.HebcalResponse hebcalResponse = gson.fromJson(responseBody, JewishController.HebcalResponse.class);
                     callback.onSuccess(hebcalResponse);
                 } catch (JsonSyntaxException e) {
                     Log.e(TAG, "JSON parsing error", e);
@@ -58,7 +61,5 @@ public class ApiClient {
                 }
             }
         });
-
-
     }
 }

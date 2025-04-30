@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="bg_black">#0A0C1D</color>
-    <color name="bg_white">#EBEEFD</color>
-    <color name="fore">#FFFFFFFF</color>
+    <color name="text1" />
+    <color name="text2" />
+    <color name="text3" />
+    <color name="text4" />
+    <color name="bg1" />
+    <color name="bg2" />
+    <color name="bg3" />
+    <color name="card_gradient_start" />
+    <color name="card_gradient_end" />
+    <color name="background" />
+    <color name="card_background" />
+    <color name="text_primary" />
+    <color name="text_secondary" />
+    <color name="accent">#165BA6</color>
+    <color name="special_color1">#165ba6</color>
+    <color name="special_color2">#124a8b</color>
 </resources>

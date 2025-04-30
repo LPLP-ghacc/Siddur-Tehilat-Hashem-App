@@ -1,35 +1,19 @@
 package com.tehilat.sidur;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.tehilat.sidur.fragments.DailyFragment;
+import com.tehilat.sidur.fragments.HomeFragment;
+import com.tehilat.sidur.fragments.SettingsFragment;
+import com.tehilat.sidur.fragments.UpcomingHolidaysFragment;
 
 public class MainActivity extends AppCompatActivity {
 

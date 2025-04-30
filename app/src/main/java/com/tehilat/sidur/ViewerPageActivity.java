@@ -3,14 +3,13 @@ package com.tehilat.sidur;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,11 +22,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestPageActivity extends AppCompatActivity {
-    private ScaleGestureDetector scaleGestureDetector;
+public class ViewerPageActivity extends AppCompatActivity {
     private int textZoom = 100; // Начальный размер текста (100%)
     private WebView controller;
     private WebSettings webSettings;
@@ -37,8 +36,15 @@ public class TestPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Нет, ну ты реши уже...
+        // Включить при большом желании
+//        // Скрываем статус-бар для полноэкранного режима
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         EdgeToEdge.enable(this);
-        setContentView(R.layout.test_page);
+        setContentView(R.layout.viewer_page);
 
         // Инициализация SharedPreferences
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -57,9 +63,11 @@ public class TestPageActivity extends AppCompatActivity {
 
         // Установка размера текста из настроек
         textZoom = prefs.getInt("text_size", 100);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            webSettings.setTextZoom(textZoom);
-        }
+        webSettings.setTextZoom(textZoom);
+
+        // Инициализация кнопки "Назад"
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // Возвращаемся в предыдущее Activity
 
         // Получение пути файла
         String filePath = getIntent().getStringExtra("filePath");
@@ -85,9 +93,6 @@ public class TestPageActivity extends AppCompatActivity {
                 controller.setVisibility(View.VISIBLE);
             });
         }).start();
-
-        // Обработка жестов (если нужно)
-        // scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }
 
     @NonNull
@@ -137,6 +142,8 @@ public class TestPageActivity extends AppCompatActivity {
         placeholders.put("{{psalm}}", getString(R.string.psalm));
         placeholders.put("{{hazan}}", getString(R.string.hazan));
         placeholders.put("{{community}}", getString(R.string.community));
+        placeholders.put("{{travel}}", getString(R.string.travel));
+        placeholders.put("{{kriat_shema}}", getString(R.string.kriat_shema));
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             htmlContent = htmlContent.replace(entry.getKey(), entry.getValue());
@@ -149,9 +156,8 @@ public class TestPageActivity extends AppCompatActivity {
         StringBuilder builder = new StringBuilder();
         try {
             String assetFilePath = filePath.replace("file:///android_asset/", "");
-            Log.d("TestPage", "Trying to read file: " + assetFilePath);
             InputStream inputStream = getAssets().open(assetFilePath);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             String line;
             while ((line = reader.readLine()) != null) {
                 builder.append(line).append("\n");
@@ -160,7 +166,7 @@ public class TestPageActivity extends AppCompatActivity {
             Log.d("TestPage", "File read successfully, length: " + builder.length());
         } catch (IOException e) {
             Log.e("TestPage", "Error reading file: " + filePath + ", " + e.getMessage());
-            builder.append("<h1>Error: Could not load file - " + e.getMessage() + "</h1>");
+            builder.append("<h1>Error: Could not load file - ").append(e.getMessage()).append("</h1>");
         }
         return builder.toString();
     }
@@ -172,41 +178,4 @@ public class TestPageActivity extends AppCompatActivity {
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
-
-    // Раскомментируй, если хочешь использовать масштабирование жестами
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        scaleGestureDetector.onTouchEvent(event);
-        controller.dispatchTouchEvent(event);
-        return super.dispatchTouchEvent(event);
-    }
-
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            float scaleFactor = detector.getScaleFactor();
-            if (scaleFactor > 1) {
-                textZoom += 1;
-            } else if (scaleFactor < 1) {
-                textZoom -= 1;
-            }
-            textZoom = Math.max(80, Math.min(textZoom, 105));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                webSettings.setTextZoom(textZoom);
-            } else {
-                if (textZoom <= 75) {
-                    webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-                } else if (textZoom <= 125) {
-                    webSettings.setTextSize(WebSettings.TextSize.NORMAL);
-                } else if (textZoom <= 150) {
-                    webSettings.setTextSize(WebSettings.TextSize.LARGER);
-                } else {
-                    webSettings.setTextSize(WebSettings.TextSize.LARGEST);
-                }
-            }
-            return true;
-        }
-    }
-    */
 }
