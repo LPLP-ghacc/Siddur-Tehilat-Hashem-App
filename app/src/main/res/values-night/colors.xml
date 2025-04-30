@@ -9,4 +9,9 @@
     <color name="bg3">#02202A</color>
     <color name="card_gradient_start">#121116</color>
     <color name="card_gradient_end">#24222D</color>
+    <color name="background">#F5F5F5</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="accent">#165BA6</color>
 </resources>

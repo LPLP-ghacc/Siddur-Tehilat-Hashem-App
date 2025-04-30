@@ -9,4 +9,11 @@
     <color name="bg3" />
     <color name="card_gradient_start" />
     <color name="card_gradient_end" />
+    <color name="background" />
+    <color name="card_background" />
+    <color name="text_primary" />
+    <color name="text_secondary" />
+    <color name="accent">#165BA6</color>
+    <color name="special_color1">#165ba6</color>
+    <color name="special_color2">#124a8b</color>
 </resources>

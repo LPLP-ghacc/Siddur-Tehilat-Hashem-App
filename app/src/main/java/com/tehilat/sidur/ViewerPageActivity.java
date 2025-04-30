@@ -5,10 +5,11 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ViewerPageActivity extends AppCompatActivity {
-    private ScaleGestureDetector scaleGestureDetector;
     private int textZoom = 100; // Начальный размер текста (100%)
     private WebView controller;
     private WebSettings webSettings;
@@ -36,6 +36,13 @@ public class ViewerPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Нет, ну ты реши уже...
+        // Включить при большом желании
+//        // Скрываем статус-бар для полноэкранного режима
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.viewer_page);
 
@@ -57,6 +64,10 @@ public class ViewerPageActivity extends AppCompatActivity {
         // Установка размера текста из настроек
         textZoom = prefs.getInt("text_size", 100);
         webSettings.setTextZoom(textZoom);
+
+        // Инициализация кнопки "Назад"
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // Возвращаемся в предыдущее Activity
 
         // Получение пути файла
         String filePath = getIntent().getStringExtra("filePath");
@@ -82,9 +93,6 @@ public class ViewerPageActivity extends AppCompatActivity {
                 controller.setVisibility(View.VISIBLE);
             });
         }).start();
-
-        // Обработка жестов (если нужно)
-        // scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }
 
     @NonNull
@@ -170,5 +178,4 @@ public class ViewerPageActivity extends AppCompatActivity {
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }
-
 }

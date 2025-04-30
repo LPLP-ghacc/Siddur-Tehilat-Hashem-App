@@ -7,8 +7,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  background-color: #111112;
-  color: #fff;
+  background-color: #111112; /* Темный фон для body */
+  color: #fff; /* Белый текст */
   font-family: 'Times New Roman', Times, serif;
   line-height: 1.8;
 }
@@ -21,7 +21,7 @@ h1 {
 }
 
 h2 {
-  color: #165ba6;
+  color: #165ba6; /* Синий цвет для заголовков */
   text-align: center;
   font-size: 28px;
   text-align: right;
@@ -31,9 +31,9 @@ h2 {
 
 h3 {
   text-align: center;
-  color: #eaeaea;
+  color: #eaeaea; /* Светло-серый цвет текста */
   font-size: 28px;
-  background-color: rgba(112, 113, 113, 0.2);
+  background-color: rgba(112, 113, 113, 0.2); /* Полупрозрачный серый фон */
   margin: 5px;
   margin-bottom: 15px;
   text-align: center;
@@ -41,28 +41,28 @@ h3 {
 
 .hint {
   text-align: center;
-  color: rgba(112, 113, 113, 0.9);
+  color: rgba(112, 113, 113, 0.9); /* Серый цвет для подсказок */
   font-size: 28px;
   margin: 5px;
   text-align: center;
 }
 
 .insert {
-  color: rgba(112, 113, 113, 0.9);
-  background-color: rgba(112, 113, 113, 0.2);
+  color: rgba(112, 113, 113, 0.9); /* Серый цвет текста */
+  background-color: rgba(112, 113, 113, 0.2); /* Полупрозрачный серый фон */
 }
 
 .header {
   position: fixed;
-  top: 0;
+  top: 0; /* Сдвигаем вниз на 20px, как указано в wrapHtmlContent */
   left: 0;
   right: 0;
   z-index: 10;
-  background-color: #31353b;
+  background-color: #31353b; /* Темный фон для header */
   padding: 10px 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Оставляем центрирование, как в последнем изменении */
   align-items: center;
 }
 
@@ -70,16 +70,43 @@ h3 {
   position: relative;
   display: inline-block;
   width: 100%;
+  max-width: 600px; /* Ограничиваем ширину для центрирования */
 }
 
 .current-section {
-  width: calc(100% - 20px);
+  width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #1e2024;
+  background-color: transparent; /* Убираем фон, как в последнем изменении */
   cursor: pointer;
   text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #165ba6; /* Синий цвет текста */
+  position: relative;
+}
+
+/* Гамбургер-иконка с помощью градиента */
+.current-section::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 16px;
+  background: linear-gradient(
+    to bottom,
+    #165ba6 3px, /* Верхняя полоска */
+    transparent 3px,
+    transparent 6px,
+    #165ba6 6px, /* Средняя полоска */
+    #165ba6 9px,
+    transparent 9px,
+    transparent 12px,
+    #165ba6 12px, /* Нижняя полоска */
+    #165ba6 15px,
+    transparent 15px
+  );
 }
 
 .dropdown-menu {
@@ -88,7 +115,7 @@ h3 {
   top: 50px;
   left: 0;
   right: 0;
-  background-color: #1e2024;
+  background-color: #1e2024; /* Темный фон для меню */
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -105,21 +132,23 @@ h3 {
   padding: 8px 15px;
   cursor: pointer;
   text-align: center;
+  font-size: 18px;
+  color: #165ba6; /* Синий цвет текста */
 }
 
 .dropdown-menu li:hover {
-  background-color: #1e2024;
+  background-color: #2a2d32; /* Чуть светлее фон при наведении */
 }
 
 .section {
-  margin-top: 80px;
+  margin-top: 80px; /* Оставляем отступ, чтобы не перекрывать header */
   padding: 10px;
   border-radius: 8px;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  color: #165ba6;
+  color: #165ba6; /* Синий цвет текста */
 }
 
 .cont {
@@ -127,30 +156,30 @@ h3 {
   justify-content: space-between;
   align-items: flex-start;
 }
+
 .left,
 .right {
   width: 45%;
 }
 
 .insertButton {
-      width: calc(100% - 20px);
-    display: block;
-    margin: 10;
-    text-align: center;
-    cursor: pointer;
-  background-color: rgba(112, 113, 113, 0.2);
-  color: rgba(112, 113, 113, 0.9);
+  width: calc(100% - 20px);
+  display: block;
+  margin: 10px;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(112, 113, 113, 0.2); /* Полупрозрачный серый фон */
+  color: rgba(112, 113, 113, 0.9); /* Серый цвет текста */
   font-size: 28px;
   border-radius: 8px;
 }
 
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-    margin-bottom: 25px;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  height: 100vh;
 }
-
 </style>
