@@ -69,7 +69,7 @@
     <string name="settings_title">Настройки</string>
     <string name="about_app_title">О приложении</string>
     <string name="about_app_text">Это приложение создано для помощи в чтении молитв. Версия 1.0. Разработано с заботой о пользователях.</string>
-    <string name="donate_button">Цдака</string>
+    <string name="donate_button">Дать цдаку</string>
     <string name="show_all">Показать все</string>
     <string name="show_less">Скрыть</string>
     <string name="more_events">и еще %d событий</string>
@@ -78,8 +78,17 @@
     <string name="compass_description">Изображение компаса</string>
     <string name="direction_to_wailing_wall">Направление на Стену Плача</string>
     <string name="candle_lighting_placeholder">Зажигание свечей: загрузка...</string>
-    <string name="havdalah_placeholder">Хавдала: загрузка...</string>
+    <string name="havdalah_placeholder">Авдала: загрузка...</string>
     <string name="candle_lighting_format">Зажигание свечей: %s</string>
-    <string name="havdalah_format">Хавдала: %s</string>
+    <string name="havdalah_format">Авдала: %s</string>
     <string name="shabbat_times">Время Шаббата</string>
+    <string name="direction_format">Направление на Стену Плача: %.0f°</string>
+    <string name="location_permission_required">Требуется разрешение на доступ к местоположению</string>
+    <string name="location_not_determined">Не удалось определить местоположение</string>
+    <string name="calibrate_compass_message">Пожалуйста, откалибруйте компас (сделайте движение в форме восьмерки)</string>
+    <string name="donation_title">Пожертвование</string>
+    <string name="donation_recipient">Получатель</string>
+    <string name="donation_amount">Сумма</string>
+    <string name="enter_amount">Введите сумму</string>
+    <string name="submit_donation">Отправить</string>
 </resources>

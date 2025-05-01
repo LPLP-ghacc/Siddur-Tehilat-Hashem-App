@@ -65,11 +65,11 @@
     <string name="all_prayers">All Prayers</string>
     <string name="home">Sidur</string>
     <string name="back_button_description">Back to prayer selection</string>
-    <string name="tdoka">Tzedakah</string>
+
     <string name="settings_title">Settings</string>
     <string name="about_app_title">About App</string>
     <string name="about_app_text">This app is designed to help you read prayers. Version 1.0. Developed with care for users.</string>
-    <string name="donate_button">Tzedakah</string>
+
 
     <string name="show_all">Show all</string>
     <string name="show_less">Show less</string>
@@ -86,4 +86,26 @@
     <string name="candle_lighting_format">Spark plug ignition: %s</string>
     <string name="havdalah_format">Havdalah: %s</string>
 
+
+    <string name="wailing_wall_latitude" translatable="false">31.7767</string>
+    <string name="wailing_wall_longitude" translatable="false">35.2345</string>
+
+    <!-- Длительность анимации компаса (в миллисекундах) -->
+    <integer name="compass_animation_duration">1000</integer>
+
+    <!-- Формат строки направления -->
+
+    <!-- Сообщения об ошибках -->
+    <string name="direction_format">The direction to the Wailing Wall: %.0f°</string>
+    <string name="location_permission_required">Location access permission is required</string>
+    <string name="location_not_determined">Couldn\'t determine location</string>
+    <string name="calibrate_compass_message">Please calibrate the compass (make a figure-of-eight movement)</string>
+
+    <string name="tdoka">Tzedakah</string>
+    <string name="donate_button">Give the tzedakah</string>
+    <string name="donation_title">Donation</string>
+    <string name="donation_recipient">Recipient</string>
+    <string name="donation_amount">The amount</string>
+    <string name="enter_amount">Enter the amount</string>
+    <string name="submit_donation">Send</string>
 </resources>

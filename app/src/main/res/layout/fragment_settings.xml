@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <!-- Заголовок "Настройки" с иконкой -->
         <LinearLayout
             android:id="@+id/settings_header"
@@ -88,7 +87,8 @@
                 android:id="@+id/text_size_seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:max="100" />
         </LinearLayout>
 
         <!-- Карточка: Выбор темы -->
@@ -115,7 +115,6 @@
 
         <!-- Карточка: О приложении -->
         <LinearLayout
-
             android:id="@+id/about"
             style="@style/CardStyle"
             android:layout_marginStart="16dp"
@@ -135,35 +134,33 @@
                 android:text="@string/about_app_text"
                 android:textColor="@color/text4"
                 android:textSize="18sp" />
-
         </LinearLayout>
 
+        <!-- Карточка: Цдака -->
         <LinearLayout
             android:id="@+id/Tzdoka"
             style="@style/CardStyle"
-            android:layout_height="match_parent"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TextView
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:src="@drawable/tsdoka_image"
+                android:contentDescription="@string/tdoka"
+                android:scaleType="centerCrop" />
+
+            <Button
+                android:id="@+id/donate_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/tsdoka_image"
-                android:text="@string/tdoka"
-                android:textAlignment="viewStart"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:text="@string/donate_button"
                 android:textColor="@color/text4"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="дать удаку"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
-
+                style="@style/ButtonStyle" />
         </LinearLayout>
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

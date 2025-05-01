@@ -3,6 +3,7 @@ package com.tehilat.sidur;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -35,10 +36,10 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private float currentDegree = 0f;
     private float bearingToWailingWall = 0f; // Направление на Стену Плача
     private boolean hasLocation = false; // Флаг, указывающий, получили ли мы местоположение
+    private float smoothedAzimuth = 0f; // Сглаженный азимут для плавного движения
+    private float alpha = 0.1f; // Коэффициент сглаживания (low-pass filter)
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private static final double WAILING_WALL_LATITUDE = 31.7767;
-    private static final double WAILING_WALL_LONGITUDE = 35.2345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getUserLocation();
             } else {
-                directionText.setText("Требуется разрешение на доступ к местоположению");
+                directionText.setText(getString(R.string.location_permission_required));
             }
         }
     }
@@ -86,37 +87,52 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                calculateBearingToWailingWall(location.getLatitude(), location.getLongitude());
+                                calculateBearingToWailingWall(location.getLatitude(), location.getLongitude(), location);
                                 hasLocation = true; // Устанавливаем флаг, что местоположение получено
                             } else {
-                                directionText.setText("Не удалось определить местоположение");
+                                directionText.setText(getString(R.string.location_not_determined));
                             }
                         }
                     });
         } catch (SecurityException e) {
-            directionText.setText("Требуется разрешение на доступ к местоположению");
+            directionText.setText(getString(R.string.location_permission_required));
         }
     }
 
-    private void calculateBearingToWailingWall(double userLat, double userLon) {
-        Location userLocation = new Location("");
-        userLocation.setLatitude(userLat);
-        userLocation.setLongitude(userLon);
+    private void calculateBearingToWailingWall(double userLat, double userLon, Location userLocation) {
+        Location userLoc = new Location("");
+        userLoc.setLatitude(userLat);
+        userLoc.setLongitude(userLon);
 
         Location wailingWallLocation = new Location("");
-        wailingWallLocation.setLatitude(WAILING_WALL_LATITUDE);
-        wailingWallLocation.setLongitude(WAILING_WALL_LONGITUDE);
+        wailingWallLocation.setLatitude(Double.parseDouble(getString(R.string.wailing_wall_latitude)));
+        wailingWallLocation.setLongitude(Double.parseDouble(getString(R.string.wailing_wall_longitude)));
 
         // Вычисляем азимут (направление) на Стену Плача
-        bearingToWailingWall = userLocation.bearingTo(wailingWallLocation);
-        directionText.setText(String.format("Направление на Стену Плача: %.0f°", bearingToWailingWall));
+        bearingToWailingWall = userLoc.bearingTo(wailingWallLocation);
+
+        // Корректируем направление с учётом магнитного склонения
+        GeomagneticField geoField = new GeomagneticField(
+                (float) userLat,
+                (float) userLon,
+                (float) userLocation.getAltitude(),
+                System.currentTimeMillis()
+        );
+        bearingToWailingWall += geoField.getDeclination();
     }
 
     private void updateCompass(float azimuth) {
         if (!hasLocation) return; // Не обновляем компас, пока не получили местоположение
 
-        // Вычисляем угол, который нужно повернуть компас (азимут устройства минус направление на Стену Плача)
-        float adjustedDegree = -azimuth - bearingToWailingWall;
+        // Применяем low-pass filter для сглаживания азимута
+        smoothedAzimuth = smoothedAzimuth + alpha * (azimuth - smoothedAzimuth);
+
+        // Вычисляем угол, который нужно повернуть компас (сглаженный азимут устройства минус направление на Стену Плача)
+        float adjustedDegree = -smoothedAzimuth - bearingToWailingWall;
+
+        // Обновляем текст направления с учётом текущего азимута
+        float displayedBearing = (bearingToWailingWall + smoothedAzimuth + 360) % 360; // Нормализуем угол (0–360 градусов)
+        directionText.setText(String.format(getString(R.string.direction_format), displayedBearing));
 
         // Анимация вращения компаса
         RotateAnimation rotateAnimation = new RotateAnimation(
@@ -124,7 +140,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
                 adjustedDegree,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(500);
+        rotateAnimation.setDuration(getResources().getInteger(R.integer.compass_animation_duration));
         rotateAnimation.setFillAfter(true);
         compassImage.startAnimation(rotateAnimation);
         currentDegree = adjustedDegree;
@@ -167,7 +183,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            directionText.setText("Пожалуйста, откалибруйте компас (сделайте движение в форме восьмерки)");
+            directionText.setText(getString(R.string.calibrate_compass_message));
         }
     }
 }

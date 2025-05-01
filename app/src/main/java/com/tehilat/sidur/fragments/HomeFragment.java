@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +32,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 import com.tehilat.sidur.CompassActivity;
 import com.tehilat.sidur.R;
 import com.tehilat.sidur.ViewerPageActivity;
@@ -47,11 +52,14 @@ import org.jetbrains.annotations.Contract;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -64,9 +72,13 @@ public class HomeFragment extends Fragment {
     private TextView moreEventsText;
     private TextView candleLightingText;
     private TextView havdalahText;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ScrollView scrollView;
     private boolean isExpanded = false;
-    private List<JewishController.Item> allEvents;
+    private List<JewishController.Item> allEvents = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationClient;
+    private double userLatitude = 0.0;
+    private double userLongitude = 0.0;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
     private static final String PREF_CANDLE_LIGHTING = "candle_lighting";
@@ -79,6 +91,19 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
+        // Инициализация SwipeRefreshLayout
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
+
+        // Инициализация ScrollView
+        scrollView = rootView.findViewById(R.id.scroll_view);
+
+        // Отключаем SwipeRefreshLayout, если ScrollView не вверху
+        scrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            // Если ScrollView в самом верху, включаем SwipeRefreshLayout
+            swipeRefreshLayout.setEnabled(scrollY == 0);
+        });
 
         // Инициализация новых элементов для времени Шаббата
         candleLightingText = rootView.findViewById(R.id.candle_lighting_time);
@@ -130,7 +155,7 @@ public class HomeFragment extends Fragment {
                 fetchShabbatTimes();
             } else {
                 Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-                loadShabbatTimes(); // Загружаем сохраненные данные, если разрешения нет
+                loadShabbatTimes();
             }
         }
     }
@@ -141,18 +166,28 @@ public class HomeFragment extends Fragment {
                     .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
+                            if (!isAdded()) return;
                             if (location != null) {
-                                String queryParams = String.format("?cfg=json&latitude=%f&longitude=%f&M=on&lg=s", location.getLatitude(), location.getLongitude());
+                                userLatitude = location.getLatitude();
+                                userLongitude = location.getLongitude();
+
+                                String queryParams = String.format(Locale.US, "?cfg=json&latitude=%f&longitude=%f&M=on&lg=s",
+                                        userLatitude, userLongitude);
                                 fetchShabbatData(queryParams);
                             } else {
-                                Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
-                                loadShabbatTimes(); // Загружаем сохраненные данные, если местоположение не определено
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
+                                    loadShabbatTimes();
+                                });
                             }
                         }
                     });
         } catch (SecurityException e) {
-            Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-            loadShabbatTimes();
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
+                loadShabbatTimes();
+            });
         }
     }
 
@@ -160,36 +195,33 @@ public class HomeFragment extends Fragment {
         HebcalApiClient.fetchHebcalData(queryParams, new HebcalApiClient.ApiResponseCallback() {
             @Override
             public void onSuccess(JewishController.HebcalResponse response) {
+                if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
-                    // Извлекаем время зажигания свечей и Хавдалы
                     String candleLighting = null;
                     String havdalah = null;
 
                     for (JewishController.Item item : response.getItems()) {
                         if ("candles".equals(item.getCategory())) {
                             candleLighting = item.getTitle();
-                            // Извлекаем только время из строки, например, "Candle lighting: 6:40pm" -> "6:40pm"
                             if (candleLighting != null && candleLighting.contains(":")) {
                                 candleLighting = candleLighting.substring(candleLighting.lastIndexOf(":") - 1).trim();
+                                candleLighting = convertToLocalTimeFormat(candleLighting);
                             }
                         } else if ("havdalah".equals(item.getCategory())) {
                             havdalah = item.getTitle();
-                            // Извлекаем только время из строки, например, "Havdalah: 8:00pm" -> "8:00pm"
                             if (havdalah != null && havdalah.contains(":")) {
                                 havdalah = havdalah.substring(havdalah.lastIndexOf(":") - 1).trim();
+                                havdalah = convertToLocalTimeFormat(havdalah);
                             }
                         }
                     }
 
-                    // Обновляем UI
                     if (candleLighting != null) {
                         candleLightingText.setText(String.format(getString(R.string.candle_lighting_format), candleLighting));
-                        // Сохраняем данные
                         prefs.edit().putString(PREF_CANDLE_LIGHTING, candleLighting).apply();
                     }
                     if (havdalah != null) {
                         havdalahText.setText(String.format(getString(R.string.havdalah_format), havdalah));
-                        // Сохраняем данные
                         prefs.edit().putString(PREF_HAVDALAH, havdalah).apply();
                     }
                 });
@@ -197,9 +229,10 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onError(String errorMessage) {
+                if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), getString(R.string.error_on_load) + errorMessage, Toast.LENGTH_SHORT).show();
-                    loadShabbatTimes(); // Загружаем сохраненные данные при ошибке
+                    loadShabbatTimes();
                 });
             }
         });
@@ -227,33 +260,143 @@ public class HomeFragment extends Fragment {
 
         eventsViewModel = new ViewModelProvider(requireActivity()).get(EventsViewModel.class);
         eventsViewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
-            allEvents = events != null && !events.isEmpty() ? filterRelevantEvents(events) : new ArrayList<>();
-            updateEventsDisplay();
+            if (events != null) {
+                allEvents = filterRelevantEvents(events);
+                updateEventsDisplay();
+            } else {
+                allEvents = new ArrayList<>();
+                updateEventsDisplay();
+            }
         });
+    }
 
-        if (eventsViewModel.getEvents().getValue() == null) {
-            String queryParams = "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&geo=geoname&geonameid=3448439&lg=RU";
-            HebcalApiClient.fetchHebcalData(queryParams, new HebcalApiClient.ApiResponseCallback() {
-                @Override
-                public void onSuccess(JewishController.HebcalResponse response) {
-                    requireActivity().runOnUiThread(() -> {
-                        allEvents = filterRelevantEvents(response.getItems());
-                        eventsViewModel.setEvents(allEvents);
-                        updateEventsDisplay();
-                    });
-                }
+    private void refreshData() {
+        if (userLatitude == 0.0 || userLongitude == 0.0) {
+            try {
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (!isAdded()) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                    return;
+                                }
+                                if (location != null) {
+                                    userLatitude = location.getLatitude();
+                                    userLongitude = location.getLongitude();
+                                    fetchEvents();
+                                } else {
+                                    requireActivity().runOnUiThread(() -> {
+                                        Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    });
+                                }
+                            }
+                        });
+            } catch (SecurityException e) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            }
+        } else {
+            fetchEvents();
+        }
+    }
 
-                @Override
-                public void onError(String errorMessage) {
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), getString(R.string.error_on_load) + errorMessage, Toast.LENGTH_SHORT).show());
-                }
-            });
+    private void fetchEvents() {
+        String language = getHebcalLanguage();
+        String queryParams = String.format(Locale.US,
+                "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&latitude=%f&longitude=%f&lg=%s",
+                userLatitude, userLongitude, language);
+
+        HebcalApiClient.fetchHebcalData(queryParams, new HebcalApiClient.ApiResponseCallback() {
+            @Override
+            public void onSuccess(JewishController.HebcalResponse response) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    List<JewishController.Item> events = response.getItems();
+                    eventsViewModel.setEvents(events);
+                    cacheData("cached_events", events);
+
+                    List<JewishController.Item> holidays = new ArrayList<>();
+                    for (JewishController.Item item : events) {
+                        if ("holiday".equals(item.getCategory())) {
+                            holidays.add(item);
+                        }
+                    }
+                    eventsViewModel.setHolidays(holidays);
+                    cacheData("cached_holidays", holidays);
+
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), getString(R.string.error_on_load) + errorMessage, Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            }
+        });
+    }
+
+    private void cacheData(String key, List<JewishController.Item> data) {
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+        prefs.edit().putString(key, json).apply();
+    }
+
+    private String getHebcalLanguage() {
+        String userLang = prefs.getString("prayer_language", null);
+        if (userLang != null) {
+            switch (userLang) {
+                case "Русский":
+                case "Русский (транслит.)":
+                    return "ru";
+                case "English":
+                    return "en";
+                case "עברית":
+                    return "he";
+                case "Français":
+                    return "fr";
+                default:
+                    return "en";
+            }
+        }
+        String systemLang = Locale.getDefault().getLanguage();
+        switch (systemLang) {
+            case "ru": return "ru";
+            case "en": return "en";
+            case "he": return "he";
+            case "fr": return "fr";
+            default: return "en";
+        }
+    }
+
+    private String convertToLocalTimeFormat(String timeStr) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return timeStr;
+        }
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("h:mma", Locale.US);
+            LocalTime time = LocalTime.parse(timeStr, inputFormatter);
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault());
+            return time.format(outputFormatter);
+        } catch (DateTimeParseException e) {
+            Log.e("TimeFormat", "Failed to parse time: " + timeStr, e);
+            return timeStr;
         }
     }
 
     private void updateEventsDisplay() {
-        if (allEvents == null || allEvents.isEmpty()) {
+        if (allEvents == null) {
+            allEvents = new ArrayList<>();
+        }
+        if (allEvents.isEmpty()) {
             actualEventsRecyclerView.setVisibility(View.GONE);
             moreEventsText.setVisibility(View.GONE);
             showAllButton.setVisibility(View.GONE);

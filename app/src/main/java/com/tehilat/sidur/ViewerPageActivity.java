@@ -37,12 +37,6 @@ public class ViewerPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Нет, ну ты реши уже...
-        // Включить при большом желании
-//        // Скрываем статус-бар для полноэкранного режима
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.viewer_page);
 
@@ -55,14 +49,20 @@ public class ViewerPageActivity extends AppCompatActivity {
 
         webSettings = controller.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setSupportZoom(false);
+        webSettings.setSupportZoom(true); // Включаем поддержку масштабирования
+        webSettings.setBuiltInZoomControls(false); // Отключаем встроенные элементы управления зумом
+        webSettings.setDisplayZoomControls(false); // Скрываем кнопки зума
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         webSettings.setSavePassword(false);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
 
-        // Установка размера текста из настроек
+        // Установка размера текста из настроек с ограничением
         textZoom = prefs.getInt("text_size", 100);
+        textZoom = Math.min(textZoom, 60); // Ограничиваем максимальный размер текста (200%)
+        textZoom = Math.max(textZoom, 50);  // Ограничиваем минимальный размер текста (50%)
         webSettings.setTextZoom(textZoom);
 
         // Инициализация кнопки "Назад"
@@ -99,7 +99,13 @@ public class ViewerPageActivity extends AppCompatActivity {
     @Contract(pure = true)
     private String wrapHtmlContent(String originalHtml, boolean isDarkTheme) {
         String themeCss = isDarkTheme ? readFileFrom("file:///android_asset/pages/styles/dark.css") : readFileFrom("file:///android_asset/pages/styles/white.css");
-        return "<html><head>" + themeCss + "</head>" + originalHtml + "</html>";
+        // Добавляем meta viewport для адаптивного отображения
+        return "<html><head>" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes\">" +
+                themeCss +
+                "</head>" +
+                originalHtml +
+                "</html>";
     }
 
     private String replacePlaceholdersWithLocalizedStrings(String htmlContent) {

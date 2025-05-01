@@ -73,9 +73,9 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayV
                 // Проверяем, является ли событие текущим
                 if (eventDate.equals(today)) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg3));
-                    holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text1));
+                    holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.special_color1));
                     holder.dateTextView.setText("Сегодня");
-                    holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text1));
+                    holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.special_color1));
                 } else {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
                     holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
