@@ -1,5 +1,6 @@
 package com.tehilat.sidur.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,16 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.tehilat.sidur.DonationActivity;
 import com.tehilat.sidur.R;
+
+import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
+
+    // Массив доступных языков
+    private static final String[] LANGUAGES = {"Русский", "Русский (транслит.)", "English", "עברית", "Français"};
+    private static final String DEFAULT_LANGUAGE = "Русский"; // Язык по умолчанию, если системный язык не поддерживается
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,20 +34,30 @@ public class SettingsFragment extends Fragment {
 
         // Язык молитвы
         Spinner languageSpinner = rootView.findViewById(R.id.language_spinner);
-        String[] languages = {"Русский", "Русский (транслит.)", "English", "עברית", "Français"};
-        ArrayAdapter<String> langAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, languages);
+        ArrayAdapter<String> langAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, LANGUAGES);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(langAdapter);
-        String currentLang = prefs.getString("prayer_language", "Русский");
+
+        // Получаем текущий язык из настроек или определяем автоматически
+        String currentLang = prefs.getString("prayer_language", null);
+        if (currentLang == null) {
+            // Если язык ещё не выбран, определяем системный язык
+            currentLang = getSystemLanguage();
+            // Сохраняем выбранный язык в настройки
+            prefs.edit().putString("prayer_language", currentLang).apply();
+        }
         languageSpinner.setSelection(langAdapter.getPosition(currentLang));
+
         languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                prefs.edit().putString("prayer_language", languages[position]).apply();
+                prefs.edit().putString("prayer_language", LANGUAGES[position]).apply();
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // SeekBar для размера текста
         SeekBar textSizeSeekBar = rootView.findViewById(R.id.text_size_seekbar);
         textSizeSeekBar.setMax(200);
         textSizeSeekBar.setProgress(prefs.getInt("text_size", 100));
@@ -66,6 +85,37 @@ public class SettingsFragment extends Fragment {
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // Кнопка "Дать цдаку"
+        Button donateButton = rootView.findViewById(R.id.donate_button);
+        donateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DonationActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
+    }
+
+    // Метод для определения системного языка и сопоставления его с доступными языками
+    private String getSystemLanguage() {
+        // Получаем текущую локаль устройства
+        String systemLanguage = Locale.getDefault().getLanguage();
+
+        // Сопоставляем системный язык с доступными языками приложения
+        switch (systemLanguage) {
+            case "ru": // Русский
+                return "Русский";
+            case "en": // Английский
+                return "English";
+            case "he": // Иврит
+                return "עברית";
+            case "fr": // Французский
+                return "Français";
+            default:
+                // Если системный язык не поддерживается, возвращаем язык по умолчанию
+                return DEFAULT_LANGUAGE;
+        }
     }
 }
