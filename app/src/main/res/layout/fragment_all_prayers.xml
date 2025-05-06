@@ -15,11 +15,19 @@
         tools:visibility="visible"
         tools:ignore="UselessParent">
 
+    <LinearLayout
+        style="@style/CardStyle"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
-            android:layout_height="147dp"
+            android:layout_height="200dp"
             android:src="@drawable/background_image_israel" />
+
+
+    </LinearLayout>
 
         <ScrollView
             android:id="@+id/scroll_view"
@@ -52,9 +60,5 @@
                     tools:ignore="NestedScrolling" />
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
-
-
-
 </FrameLayout>

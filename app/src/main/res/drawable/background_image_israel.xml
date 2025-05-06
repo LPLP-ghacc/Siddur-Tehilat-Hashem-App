@@ -3,4 +3,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/israelbg"
     android:tileMode="disabled"
-    android:gravity="center_horizontal"/>
+    android:gravity="fill_horizontal"/>
