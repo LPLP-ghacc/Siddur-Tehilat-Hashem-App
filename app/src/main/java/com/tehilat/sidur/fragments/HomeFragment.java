@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -46,6 +47,13 @@ import com.tehilat.sidur.calendar.JewishController;
 import com.tehilat.sidur.calendar.JewishHolidayHelper;
 import com.tehilat.sidur.models.EventsViewModel;
 import org.jetbrains.annotations.Contract;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,6 +67,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class HomeFragment extends Fragment {
 
@@ -70,6 +80,7 @@ public class HomeFragment extends Fragment {
     private TextView moreEventsText;
     private TextView candleLightingText;
     private TextView havdalahText;
+    private TextView weeklyParashaText; // Новый TextView для недельной главы
     private SwipeRefreshLayout swipeRefreshLayout;
     private boolean isExpanded = false;
     private List<JewishController.Item> allEvents = new ArrayList<>();
@@ -80,6 +91,7 @@ public class HomeFragment extends Fragment {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
     private static final String PREF_CANDLE_LIGHTING = "candle_lighting";
     private static final String PREF_HAVDALAH = "havdalah";
+    private static final String PREF_WEEKLY_PARASHA = "weekly_parasha"; // Ключ для кэширования
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -101,9 +113,10 @@ public class HomeFragment extends Fragment {
             swipeRefreshLayout.setEnabled(scrollY == 0);
         });
 
-        // Инициализация элементов для времени Шаббата
+        // Инициализация элементов для времени Шаббата и недельной главы
         candleLightingText = rootView.findViewById(R.id.candle_lighting_time);
         havdalahText = rootView.findViewById(R.id.havdalah_time);
+        weeklyParashaText = rootView.findViewById(R.id.weekly_parasha); // Инициализация нового TextView
 
         // Инициализация геолокации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -127,10 +140,11 @@ public class HomeFragment extends Fragment {
         // Обработчик кнопки "Показать все"
         showAllButton.setOnClickListener(v -> toggleEventsDisplay());
 
-        // Загрузка сохраненных данных о Шаббате (для оффлайн-режима)
+        // Загрузка сохраненных данных о Шаббате и недельной главе (для оффлайн-режима)
         loadShabbatTimes();
+        loadWeeklyParasha();
 
-        // Проверка разрешений и запрос времени Шаббата
+        // Проверка разрешений и запрос времени Шаббата и недельной главы
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(),
@@ -138,6 +152,7 @@ public class HomeFragment extends Fragment {
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             fetchShabbatTimes();
+            fetchWeeklyParasha();
         }
 
         return rootView;
@@ -149,9 +164,11 @@ public class HomeFragment extends Fragment {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchShabbatTimes();
+                fetchWeeklyParasha();
             } else {
                 Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
                 loadShabbatTimes();
+                loadWeeklyParasha();
             }
         }
     }
@@ -301,6 +318,75 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Метод для загрузки сохранённой недельной главы
+    private void loadWeeklyParasha() {
+        String savedParasha = prefs.getString(PREF_WEEKLY_PARASHA, null);
+        if (savedParasha != null) {
+            weeklyParashaText.setText(String.format(getString(R.string.weekly_parasha_format), savedParasha));
+        }
+    }
+
+    // Метод для загрузки недельной главы из RSS
+    private void fetchWeeklyParasha() {
+        String language = getHebcalLanguage();
+        String rssUrl = "https://www.hebcal.com/sedrot/index-" + language + ".xml";
+        new FetchParashaTask().execute(rssUrl);
+    }
+
+    // AsyncTask для загрузки и парсинга RSS
+    private class FetchParashaTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder xml = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    xml.append(line);
+                }
+                reader.close();
+
+                // Парсинг XML
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(new java.io.ByteArrayInputStream(xml.toString().getBytes()));
+                doc.getDocumentElement().normalize();
+
+                NodeList itemList = doc.getElementsByTagName("item");
+                if (itemList.getLength() > 0) {
+                    Element item = (Element) itemList.item(0); // Берем первый элемент
+                    NodeList titleList = item.getElementsByTagName("title");
+                    if (titleList.getLength() > 0) {
+                        return titleList.item(0).getTextContent();
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("FetchParashaTask", "Error fetching/parsing RSS", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                if (result != null) {
+                    weeklyParashaText.setText(String.format(getString(R.string.weekly_parasha_format), result));
+                    prefs.edit().putString(PREF_WEEKLY_PARASHA, result).apply();
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.error_on_load), Toast.LENGTH_SHORT).show();
+                    loadWeeklyParasha();
+                }
+            });
+        }
+    }
+
     private void setupRecyclerView(@NonNull View rootView) {
         RecyclerView recyclerView = rootView.findViewById(R.id.actualEventsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -336,6 +422,7 @@ public class HomeFragment extends Fragment {
                                     userLatitude = location.getLatitude();
                                     userLongitude = location.getLongitude();
                                     fetchEvents();
+                                    fetchWeeklyParasha(); // Обновляем недельную главу при обновлении данных
                                 } else {
                                     requireActivity().runOnUiThread(() -> {
                                         Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
@@ -353,6 +440,7 @@ public class HomeFragment extends Fragment {
             }
         } else {
             fetchEvents();
+            fetchWeeklyParasha(); // Обновляем недельную главу при обновлении данных
         }
     }
 
@@ -549,7 +637,6 @@ public class HomeFragment extends Fragment {
                 getResources().getString(R.string.maariv),
                 getResources().getString(R.string.tehilim),
                 getResources().getString(R.string.birkathamazon),
-                getResources().getString(R.string.travel),
                 getResources().getString(R.string.kriat_shema),
         };
 
@@ -586,9 +673,7 @@ public class HomeFragment extends Fragment {
             case 2: filePath = "file:///android_asset/pages/" + langCode + "/Maariv.html"; break;
             case 3: filePath = "file:///android_asset/tegilim/" + langCode + "/tegilim.html"; break;
             case 4: filePath = "file:///android_asset/pages/" + langCode + "/BirkatHamazon.html"; break;
-            case 5: filePath = "file:///android_asset/pages/" + langCode + "/Travel.html"; break;
-            case 6: filePath = "file:///android_asset/pages/" + langCode + "/Bedtime Shema.html"; break;
-            case 7: filePath = "file:///android_asset/pages/" + langCode + "/Nasi.html"; break;
+            case 5: filePath = "file:///android_asset/pages/" + langCode + "/Bedtime Shema.html"; break;
             default: filePath = "file:///android_asset/default.html"; break;
         }
         Log.d("FilePath", "Loading file: " + filePath);

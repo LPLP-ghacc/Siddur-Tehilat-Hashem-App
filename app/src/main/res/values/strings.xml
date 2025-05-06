@@ -112,4 +112,7 @@
     <string name="mein_shalosh">Mein Shalosh</string>
     <string name="avdala">Havdalah</string>
     <string name="nasi">The Nasi</string>
+    <string name="weekly_parasha">Weekly Parashat:</string>
+
+    <string name="weekly_parasha_format">Parashat: %s</string>
 </resources>
