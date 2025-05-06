@@ -29,7 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tehilat.sidur.api.HebcalApiClient;
 import com.tehilat.sidur.calendar.JewishController;
-import com.tehilat.sidur.fragments.DailyFragment;
+import com.tehilat.sidur.fragments.AllPrayersFragment;
 import com.tehilat.sidur.fragments.HomeFragment;
 import com.tehilat.sidur.fragments.SettingsFragment;
 import com.tehilat.sidur.fragments.UpcomingHolidaysFragment;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView botNav;
     HomeFragment home = new HomeFragment();
-    DailyFragment daily = new DailyFragment();
+    AllPrayersFragment daily = new AllPrayersFragment();
     UpcomingHolidaysFragment holidays = new UpcomingHolidaysFragment();
     SettingsFragment settings = new SettingsFragment();
 

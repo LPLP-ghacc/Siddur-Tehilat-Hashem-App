@@ -2,13 +2,10 @@ package com.tehilat.sidur.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -54,6 +51,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -73,7 +71,6 @@ public class HomeFragment extends Fragment {
     private TextView candleLightingText;
     private TextView havdalahText;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ScrollView scrollView;
     private boolean isExpanded = false;
     private List<JewishController.Item> allEvents = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationClient;
@@ -97,15 +94,14 @@ public class HomeFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
 
         // Инициализация ScrollView
-        scrollView = rootView.findViewById(R.id.scroll_view);
+        ScrollView scrollView = rootView.findViewById(R.id.scroll_view);
 
         // Отключаем SwipeRefreshLayout, если ScrollView не вверху
         scrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            // Если ScrollView в самом верху, включаем SwipeRefreshLayout
             swipeRefreshLayout.setEnabled(scrollY == 0);
         });
 
-        // Инициализация новых элементов для времени Шаббата
+        // Инициализация элементов для времени Шаббата
         candleLightingText = rootView.findViewById(R.id.candle_lighting_time);
         havdalahText = rootView.findViewById(R.id.havdalah_time);
 
@@ -171,9 +167,24 @@ public class HomeFragment extends Fragment {
                                 userLatitude = location.getLatitude();
                                 userLongitude = location.getLongitude();
 
-                                String queryParams = String.format(Locale.US, "?cfg=json&latitude=%f&longitude=%f&M=on&lg=s",
-                                        userLatitude, userLongitude);
-                                fetchShabbatData(queryParams);
+                                // Определяем ближайший Шаббат относительно текущей даты
+                                LocalDate today = null;
+                                LocalDate startDate = null; // Пятница (зажигание свечей)
+                                LocalDate endDate = null;   // Суббота (авдала)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    today = LocalDate.now();
+                                    // Находим ближайшую пятницу (день зажигания свечей)
+                                    int daysUntilFriday = (5 - today.getDayOfWeek().getValue() + 7) % 7;
+                                    startDate = today.plusDays(daysUntilFriday);
+                                    // Суббота — следующий день после пятницы
+                                    endDate = startDate.plusDays(1);
+                                }
+                                assert startDate != null && endDate != null;
+                                // Запрос без хардкода часового пояса
+                                String queryParams = String.format(getResources().getConfiguration().locale,
+                                        "?cfg=json&latitude=%f&longitude=%f&M=on&m=72&lg=s&start=%s&end=%s&b=18",
+                                        userLatitude, userLongitude, startDate.toString(), endDate.toString());
+                                fetchShabbatData(queryParams, startDate, endDate);
                             } else {
                                 requireActivity().runOnUiThread(() -> {
                                     Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
@@ -191,40 +202,80 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void fetchShabbatData(String queryParams) {
+    private void fetchShabbatData(String queryParams, LocalDate candleDate, LocalDate havdalahDate) {
         HebcalApiClient.fetchHebcalData(queryParams, new HebcalApiClient.ApiResponseCallback() {
             @Override
             public void onSuccess(JewishController.HebcalResponse response) {
                 if (!isAdded()) return;
-                requireActivity().runOnUiThread(() -> {
-                    String candleLighting = null;
-                    String havdalah = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    requireActivity().runOnUiThread(() -> {
+                        String candleLighting = null;
+                        String havdalah = null;
 
-                    for (JewishController.Item item : response.getItems()) {
-                        if ("candles".equals(item.getCategory())) {
-                            candleLighting = item.getTitle();
-                            if (candleLighting != null && candleLighting.contains(":")) {
-                                candleLighting = candleLighting.substring(candleLighting.lastIndexOf(":") - 1).trim();
-                                candleLighting = convertToLocalTimeFormat(candleLighting);
-                            }
-                        } else if ("havdalah".equals(item.getCategory())) {
-                            havdalah = item.getTitle();
-                            if (havdalah != null && havdalah.contains(":")) {
-                                havdalah = havdalah.substring(havdalah.lastIndexOf(":") - 1).trim();
-                                havdalah = convertToLocalTimeFormat(havdalah);
+                        // Логируем полный ответ API для отладки
+                        Log.d("HebcalResponse", "Items: " + response.getItems().toString());
+
+                        for (JewishController.Item item : response.getItems()) {
+                            try {
+                                LocalDate eventDate = OffsetDateTime.parse(item.getDate()).toLocalDate();
+                                Log.d("ItemDebug", "Category: " + item.getCategory() + ", Date: " + item.getDate() + ", Title: " + item.getTitle());
+
+                                if ("candles".equals(item.getCategory()) && eventDate.equals(candleDate)) {
+                                    candleLighting = item.getDate();
+                                    if (candleLighting != null) {
+                                        try {
+                                            OffsetDateTime dateTime = OffsetDateTime.parse(candleLighting);
+                                            LocalTime time = dateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalTime();
+                                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", getResources().getConfiguration().locale);
+                                            candleLighting = time.format(formatter);
+                                            Log.d("CandleLighting", "Parsed time for " + eventDate + ": " + candleLighting);
+                                        } catch (DateTimeParseException e) {
+                                            Log.e("TimeParse", "Failed to parse candle lighting time: " + candleLighting, e);
+                                            candleLighting = item.getTitle();
+                                            if (candleLighting != null && candleLighting.contains(":")) {
+                                                candleLighting = candleLighting.substring(candleLighting.lastIndexOf(":") - 5).trim();
+                                                candleLighting = convertToLocalTimeFormat(candleLighting);
+                                            }
+                                        }
+                                    }
+                                } else if ("havdalah".equals(item.getCategory()) && eventDate.equals(havdalahDate)) {
+                                    havdalah = item.getDate();
+                                    if (havdalah != null) {
+                                        try {
+                                            OffsetDateTime dateTime = OffsetDateTime.parse(havdalah);
+                                            LocalTime time = dateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalTime();
+                                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", getResources().getConfiguration().locale);
+                                            havdalah = time.format(formatter);
+                                            Log.d("Havdalah", "Parsed time for " + eventDate + ": " + havdalah);
+                                        } catch (DateTimeParseException e) {
+                                            Log.e("TimeParse", "Failed to parse havdalah time: " + havdalah, e);
+                                            havdalah = item.getTitle();
+                                            if (havdalah != null && havdalah.contains(":")) {
+                                                havdalah = havdalah.substring(havdalah.lastIndexOf(":") - 5).trim();
+                                                havdalah = convertToLocalTimeFormat(havdalah);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (DateTimeParseException e) {
+                                Log.e("DateParse", "Failed to parse event date: " + item.getDate(), e);
                             }
                         }
-                    }
 
-                    if (candleLighting != null) {
-                        candleLightingText.setText(String.format(getString(R.string.candle_lighting_format), candleLighting));
-                        prefs.edit().putString(PREF_CANDLE_LIGHTING, candleLighting).apply();
-                    }
-                    if (havdalah != null) {
-                        havdalahText.setText(String.format(getString(R.string.havdalah_format), havdalah));
-                        prefs.edit().putString(PREF_HAVDALAH, havdalah).apply();
-                    }
-                });
+                        if (candleLighting != null) {
+                            candleLightingText.setText(String.format(getString(R.string.candle_lighting_format), candleLighting));
+                            prefs.edit().putString(PREF_CANDLE_LIGHTING, candleLighting).apply();
+                        } else {
+                            Log.w("CandleLighting", "No candle lighting time found for target date: " + candleDate);
+                        }
+                        if (havdalah != null) {
+                            havdalahText.setText(String.format(getString(R.string.havdalah_format), havdalah));
+                            prefs.edit().putString(PREF_HAVDALAH, havdalah).apply();
+                        } else {
+                            Log.w("Havdalah", "No havdalah time found for target date: " + havdalahDate);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -307,7 +358,7 @@ public class HomeFragment extends Fragment {
 
     private void fetchEvents() {
         String language = getHebcalLanguage();
-        String queryParams = String.format(Locale.US,
+        String queryParams = String.format(getResources().getConfiguration().locale,
                 "?v=1&cfg=json&maj=on&min=on&mod=on&nx=on&year=now&latitude=%f&longitude=%f&lg=%s",
                 userLatitude, userLongitude, language);
 
@@ -351,9 +402,9 @@ public class HomeFragment extends Fragment {
     }
 
     private String getHebcalLanguage() {
-        String userLang = prefs.getString("prayer_language", null);
-        if (userLang != null) {
-            switch (userLang) {
+        String appLang = prefs.getString("app_language", null);
+        if (appLang != null) {
+            switch (appLang) {
                 case "Русский":
                 case "Русский (транслит.)":
                     return "ru";
@@ -382,9 +433,9 @@ public class HomeFragment extends Fragment {
             return timeStr;
         }
         try {
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("h:mma", Locale.US);
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
             LocalTime time = LocalTime.parse(timeStr, inputFormatter);
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault());
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm", getResources().getConfiguration().locale);
             return time.format(outputFormatter);
         } catch (DateTimeParseException e) {
             Log.e("TimeFormat", "Failed to parse time: " + timeStr, e);
@@ -517,7 +568,7 @@ public class HomeFragment extends Fragment {
     @NonNull
     @Contract(pure = true)
     private String getPrayerFilePath(int position) {
-        String lang = prefs.getString("prayer_language", "Русский");
+        String lang = prefs.getString("prayer_language", "עברית");
         String langCode;
 
         switch (lang) {

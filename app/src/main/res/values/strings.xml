@@ -108,4 +108,8 @@
     <string name="donation_amount">The amount</string>
     <string name="enter_amount">Enter the amount</string>
     <string name="submit_donation">Send</string>
+    <string name="app_language">App Language</string>
+    <string name="mein_shalosh">Mein Shalosh</string>
+    <string name="avdala">Havdalah</string>
+    <string name="nasi">The Nasi</string>
 </resources>
