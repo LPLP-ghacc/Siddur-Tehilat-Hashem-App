@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
     private TextView moreEventsText;
     private TextView candleLightingText;
     private TextView havdalahText;
-    private TextView weeklyParashaText; // Новый TextView для недельной главы
+    private TextView weeklyParashaText;
     private SwipeRefreshLayout swipeRefreshLayout;
     private boolean isExpanded = false;
     private List<JewishController.Item> allEvents = new ArrayList<>();
@@ -377,7 +377,7 @@ public class HomeFragment extends Fragment {
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 if (result != null) {
-                    weeklyParashaText.setText(String.format(getString(R.string.weekly_parasha_format), result));
+                    weeklyParashaText.setText(result);
                     prefs.edit().putString(PREF_WEEKLY_PARASHA, result).apply();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.error_on_load), Toast.LENGTH_SHORT).show();

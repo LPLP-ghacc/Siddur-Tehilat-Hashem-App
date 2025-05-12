@@ -1,184 +1,303 @@
+
 <style>
-body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background-color: #fff;
-  color: #000;
-  font-family: 'Times New Roman', Times, serif;
-  line-height: 1.8;
+/* Define CSS custom properties for theming */
+
+:root {
+  --bg-primary: #ffffff; /* White background */
+  --bg-secondary: #f5f5f5; /* Light gray for dropdown menu */
+  --bg-header: #ffffff; /* White header background */
+  --text-primary: #000000; /* Black text */
+  --text-accent: #165ba6; /* Blue accent */
+  --text-muted: rgba(112, 113, 113, 0.9); /* Muted gray text */
+  --bg-muted: rgba(112, 113, 113, 0.2); /* Muted gray background */
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  --border-radius: 8px; /* Consistent border radius */
+  --transition: all 0.3s ease; /* Smooth transitions */
 }
 
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  user-select: none;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Times New Roman', Times, serif;
+  line-height: 1.8;
+  font-size: clamp(16px, 2vw, 18px);
+  overflow-x: hidden;
+}
+
+/* Headings */
 h1 {
-  font-size: 30px;
-  margin: 5px;
-  margin-bottom: 15px;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin: 0.5rem 0 1rem;
   text-align: center;
+  font-weight: 700;
 }
 
 h2 {
-  color: #165ba6;
-  text-align: center;
-  font-size: 28px;
+  color: var(--text-accent);
+  font-size: clamp(1.5rem, 4vw, 1.8rem);
   text-align: right;
-  margin: 5px;
-  margin-bottom: 15px;
+  margin: 0.5rem 0 1rem;
+  font-weight: 600;
 }
 
 h3 {
+  color: var(--text-primary);
+  font-size: clamp(1.4rem, 3.5vw, 1.7rem);
+  background: var(--bg-muted);
+  margin: 0.5rem 0 1rem;
+  padding: 0.5rem;
   text-align: center;
-  color: #000;
-  font-size: 28px;
-  background-color: rgba(112, 113, 113, 0.2);
-  margin: 5px;
-  margin-bottom: 15px;
-  text-align: center;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
 }
 
+/* Hint text */
 .hint {
+  color: var(--text-muted);
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
   text-align: center;
-  color: rgba(112, 113, 113, 0.9);
-  font-size: 28px;
-  margin: 5px;
-  text-align: center;
+  margin: 0.5rem 0;
 }
 
+/* Insert element */
 .insert {
-  color: rgba(112, 113, 113, 0.9);
-  background-color: rgba(112, 113, 113, 0.2);
+  color: var(--text-muted);
+  background: var(--bg-muted);
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
 }
 
+/* Header */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10;
-  background-color: #fff;
-  padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  background: linear-gradient(180deg, var(--bg-header), rgba(255, 255, 255, 0.8));
+  padding: 0.75rem 1.5rem;
+  box-shadow: var(--shadow);
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(10px);
 }
 
+/* Dropdown */
 .dropdown {
   position: relative;
-  display: inline-block;
   width: 100%;
-  max-width: 600px; /* Ограничиваем ширину для центрирования */
+  max-width: 600px;
 }
 
 .current-section {
   width: 100%;
-  padding: 10px;
-  background-color: transparent;
+  padding: 0.75rem;
+  background: transparent;
   cursor: pointer;
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #165ba6;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  font-weight: 600;
+  color: var(--text-accent);
   position: relative;
+  transition: var(--transition);
 }
 
-/* Рисуем гамбургер-иконку с помощью CSS и градиента */
+.current-section:hover,
+.current-section:focus {
+  color: var(--text-primary);
+  transform: scale(1.02);
+}
+
+.current-section:focus {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 2px;
+}
+
+/* Hamburger icon */
 .current-section::after {
   content: '';
   position: absolute;
-  right: 10px;
+  right: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px; /* Ширина иконки */
-  height: 16px; /* Высота иконки */
+  width: 24px;
+  height: 16px;
   background: linear-gradient(
     to bottom,
-    #165ba6 3px, /* Верхняя полоска */
-    transparent 3px,
-    transparent 6px,
-    #165ba6 6px, /* Средняя полоска */
-    #165ba6 9px,
-    transparent 9px,
-    transparent 12px,
-    #165ba6 12px, /* Нижняя полоска */
-    #165ba6 15px,
+    var(--text-accent) 3px,
+    transparent 3px 6px,
+    var(--text-accent) 6px 9px,
+    transparent 9px 12px,
+    var(--text-accent) 12px 15px,
     transparent 15px
   );
+  transition: var(--transition);
 }
 
+/* Dropdown menu */
 .dropdown-menu {
   display: none;
   position: absolute;
-  top: 50px;
+  top: 3rem;
   left: 0;
   right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 20;
-  max-height: 700px;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  z-index: 2000;
+  max-height: 70vh;
   overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: var(--transition), opacity 0.3s ease, transform 0.3s ease;
 }
 
 .dropdown-menu.open {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .dropdown-menu li {
-  padding: 8px 15px;
+  padding: 0.75rem 1rem;
   cursor: pointer;
   text-align: center;
-  font-size: 18px;
-  color: #165ba6;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-accent);
+  transition: var(--transition);
 }
 
-.dropdown-menu li:hover {
-  background-color: #f5f5f5;
+.dropdown-menu li:hover,
+.dropdown-menu li:focus {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  transform: translateX(5px);
 }
 
+.dropdown-menu li:focus {
+  outline: 2px solid var(--text-accent);
+}
+
+/* Sections */
 .section {
-  margin-top: 80px;
-  padding: 10px;
-  border-radius: 8px;
-  width: 80%;
+  margin-top: 5rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  color: #165ba6;
+  color: var(--text-accent);
+  transition: var(--transition);
 }
 
+/* Content layout */
 .cont {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .left,
 .right {
-  width: 45%;
+  flex: 1;
+  min-width: 300px;
 }
 
+/* Insert button */
 .insertButton {
-  width: calc(100% - 20px);
   display: block;
-  margin: 10px;
+  width: calc(100% - 1rem);
+  margin: 0.5rem;
+  padding: 0.75rem;
   text-align: center;
   cursor: pointer;
-  background-color: rgba(112, 113, 113, 0.2);
-  color: rgba(112, 113, 113, 0.9);
-  font-size: 28px;
-  border-radius: 8px;
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  font-size: clamp(1.3rem, 3vw, 1.5rem);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
 }
 
+.insertButton:hover,
+.insertButton:focus {
+  background: var(--text-accent);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.insertButton:focus {
+  outline: 2px solid var(--text-accent);
+}
+
+/* Container */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
-  margin-bottom: 25px;
+  margin: 1rem 0 1.5rem;
+  width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dropdown {
+    max-width: 100%;
+  }
+
+  .section {
+    width: 95%;
+  }
+
+  .cont {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    max-height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  h2,
+  h3,
+  .hint,
+  .insertButton {
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+  }
+
+  .current-section {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+  }
 }
 </style>

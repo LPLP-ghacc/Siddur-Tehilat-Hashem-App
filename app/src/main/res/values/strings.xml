@@ -115,4 +115,5 @@
     <string name="weekly_parasha">Weekly Parashat:</string>
 
     <string name="weekly_parasha_format">Parashat: %s</string>
+    <string name="lib">Library</string>
 </resources>

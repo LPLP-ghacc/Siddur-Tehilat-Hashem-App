@@ -3,23 +3,21 @@ package com.tehilat.sidur.fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
+import com.tehilat.sidur.LibraryActivity;
 import com.tehilat.sidur.R;
 import com.tehilat.sidur.ViewerPageActivity;
-
 import org.jetbrains.annotations.Contract;
 
 public class AllPrayersFragment extends Fragment {
@@ -33,8 +31,17 @@ public class AllPrayersFragment extends Fragment {
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         initListViews(rootView);
+        initKitsurButton(rootView);
 
         return rootView;
+    }
+
+    private void initKitsurButton(@NonNull View rootView) {
+        Button kitsurButton = rootView.findViewById(R.id.kitsurButton);
+        kitsurButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LibraryActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initListViews(@NonNull View rootView) {
