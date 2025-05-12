@@ -15,27 +15,12 @@
         tools:visibility="visible"
         tools:ignore="UselessParent">
 
-    <LinearLayout
-        style="@style/CardStyle"
-        android:layout_width="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:src="@drawable/background_image_israel" />
-
-
-    </LinearLayout>
-
         <ScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name">
 
-            <!-- List of all blessings -->
             <LinearLayout
                 style="@style/CardStyle"
                 android:layout_width="match_parent"
@@ -58,6 +43,54 @@
                     android:dividerHeight="1dp"
                     android:padding="0dp"
                     tools:ignore="NestedScrolling" />
+
+                <ImageView
+                    android:id="@+id/separator1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/separator" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/lib"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Кнопка для Китцур Шулхан Арух -->
+                <Button
+                    android:id="@+id/kitsurButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Китцур Шулхан Арух"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/pipButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="другая книга"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+                <Button
+                    android:id="@+id/pip1Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="и еще другая книга"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

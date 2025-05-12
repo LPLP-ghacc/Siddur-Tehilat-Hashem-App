@@ -97,4 +97,5 @@
     <string name="nasi">Наси</string>
     <string name="weekly_parasha">Недельная глава:</string>
     <string name="weekly_parasha_format">Недельная глава: %s</string>
+    <string name="lib">Библиотека</string>
 </resources>
