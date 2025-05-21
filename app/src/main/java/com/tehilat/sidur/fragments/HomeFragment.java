@@ -490,29 +490,16 @@ public class HomeFragment extends Fragment {
     }
 
     private String getHebcalLanguage() {
-        String appLang = prefs.getString("app_language", null);
-        if (appLang != null) {
-            switch (appLang) {
-                case "Русский":
-                case "Русский (транслит.)":
-                    return "ru";
-                case "English":
-                    return "en";
-                case "עברית":
-                    return "he";
-                case "Français":
-                    return "fr";
-                default:
-                    return "en";
-            }
-        }
-        String systemLang = Locale.getDefault().getLanguage();
-        switch (systemLang) {
-            case "ru": return "ru";
-            case "en": return "en";
-            case "he": return "he";
-            case "fr": return "fr";
-            default: return "en";
+        String appLang = prefs.getString("app_language", "English");
+        switch (appLang) {
+            case "Русский":
+                return "ru";
+            case "English":
+                return "en";
+            case "עברית":
+                return "he";
+            default:
+                return "en";
         }
     }
 

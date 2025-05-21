@@ -116,4 +116,19 @@
 
     <string name="weekly_parasha_format">Parashat: %s</string>
     <string name="lib">Library</string>
+    <string name="location_unavailable">Location unavailable.</string>
+    <string name="feature_not_supported">Feature not supported</string>
+    <string name="default_theme">Default</string>
+    <string name="dark_theme">Dark</string>
+    <string name="white_theme">White</string>
+    <string name="goto_library">Go to the Library (closed)</string>
+
+    <string-array name="morning_prayers">
+        <item>@string/shararit</item>
+        <item>@string/mincha</item>
+        <item>@string/maariv</item>
+        <item>@string/tehilim</item>
+        <item>@string/birkathamazon</item>
+        <item>@string/kriat_shema</item>
+    </string-array>
 </resources>
