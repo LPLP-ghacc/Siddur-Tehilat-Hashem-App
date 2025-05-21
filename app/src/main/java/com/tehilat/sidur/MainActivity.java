@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -20,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -57,10 +59,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         // Инициализация SharedPreferences
-        prefs = getSharedPreferences("AppData", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Применение темы из настроек перед setContentView
+        applyTheme(prefs.getString("theme", "default"));
+
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Инициализация ViewModel
         eventsViewModel = new ViewModelProvider(this).get(EventsViewModel.class);
@@ -81,20 +93,12 @@ public class MainActivity extends AppCompatActivity {
             fetchData();
         }
 
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         botNav = findViewById(R.id.bottom_nav);
 
         // Установка начального фрагмента (например, HomeFragment)
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.mainSidur, home) // Исправлено с fragment_container на mainSidur
+                    .replace(R.id.mainSidur, home)
                     .commit();
         }
 
@@ -119,6 +123,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void applyTheme(String theme) {
+        switch (theme) {
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "white":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "default":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -127,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 fetchData();
             } else {
                 Toast.makeText(this, "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-                // Используем кэшированные данные
                 loadCachedData();
             }
         }
@@ -203,13 +220,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadCachedData() {
-        // Загружаем кэшированные события
         List<JewishController.Item> cachedEvents = loadCachedList(PREF_EVENTS_KEY);
         if (cachedEvents != null && !cachedEvents.isEmpty()) {
             eventsViewModel.setEvents(cachedEvents);
         }
 
-        // Загружаем кэшированные праздники
         List<JewishController.Item> cachedHolidays = loadCachedList(PREF_HOLIDAYS_KEY);
         if (cachedHolidays != null && !cachedHolidays.isEmpty()) {
             eventsViewModel.setHolidays(cachedHolidays);

@@ -31,17 +31,8 @@ public class AllPrayersFragment extends Fragment {
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         initListViews(rootView);
-        initKitsurButton(rootView);
 
         return rootView;
-    }
-
-    private void initKitsurButton(@NonNull View rootView) {
-        Button kitsurButton = rootView.findViewById(R.id.kitsurButton);
-        kitsurButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), LibraryActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void initListViews(@NonNull View rootView) {

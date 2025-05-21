@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageButton;
@@ -14,6 +13,7 @@ import android.widget.ImageButton;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import org.jetbrains.annotations.Contract;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ViewerPageActivity extends AppCompatActivity {
-    private int textZoom = 100; // Начальный размер текста (100%)
+    private int textZoom = 100;
     private WebView controller;
     private WebSettings webSettings;
     private SharedPreferences prefs;
@@ -36,12 +36,14 @@ public class ViewerPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.viewer_page);
 
         // Инициализация SharedPreferences
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Применение темы из настроек
+        applyTheme(prefs.getString("theme", "default"));
 
         // Инициализация WebView
         controller = findViewById(R.id.simpleWebView);
@@ -49,9 +51,9 @@ public class ViewerPageActivity extends AppCompatActivity {
 
         webSettings = controller.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setSupportZoom(true); // Включаем поддержку масштабирования
-        webSettings.setBuiltInZoomControls(false); // Отключаем встроенные элементы управления зумом
-        webSettings.setDisplayZoomControls(false); // Скрываем кнопки зума
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(false);
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
@@ -59,15 +61,15 @@ public class ViewerPageActivity extends AppCompatActivity {
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
 
-        // Установка размера текста из настроек с ограничением
+        // Установка размера текста
         textZoom = prefs.getInt("text_size", 100);
-        textZoom = Math.min(textZoom, 60); // Ограничиваем максимальный размер текста (200%)
-        textZoom = Math.max(textZoom, 50);  // Ограничиваем минимальный размер текста (50%)
+        textZoom = Math.min(textZoom, 200); // Исправлено: синхронизируем с максимумом SeekBar
+        textZoom = Math.max(textZoom, 50);
         webSettings.setTextZoom(textZoom);
 
-        // Инициализация кнопки "Назад"
+        // Кнопка "Назад"
         ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> finish()); // Возвращаемся в предыдущее Activity
+        backButton.setOnClickListener(v -> finish());
 
         // Получение пути файла
         String filePath = getIntent().getStringExtra("filePath");
@@ -95,11 +97,24 @@ public class ViewerPageActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void applyTheme(String theme) {
+        switch (theme) {
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "white":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "default":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
     @NonNull
     @Contract(pure = true)
     private String wrapHtmlContent(String originalHtml, boolean isDarkTheme) {
         String themeCss = isDarkTheme ? readFileFrom("file:///android_asset/pages/styles/dark.css") : readFileFrom("file:///android_asset/pages/styles/white.css");
-        // Добавляем meta viewport для адаптивного отображения
         return "<html><head>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes\">" +
                 themeCss +
@@ -150,6 +165,8 @@ public class ViewerPageActivity extends AppCompatActivity {
         placeholders.put("{{community}}", getString(R.string.community));
         placeholders.put("{{travel}}", getString(R.string.travel));
         placeholders.put("{{kriat_shema}}", getString(R.string.kriat_shema));
+        placeholders.put("{{avdala}}", getString(R.string.avdala));
+        placeholders.put("{{mein_shalosh}}", getString(R.string.mein_shalosh));
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             htmlContent = htmlContent.replace(entry.getKey(), entry.getValue());
@@ -178,9 +195,9 @@ public class ViewerPageActivity extends AppCompatActivity {
     }
 
     private boolean isDarkThemeActive() {
-        String theme = prefs.getString("theme", "По умолчанию");
-        if ("Темная".equals(theme)) return true;
-        if ("Светлая".equals(theme)) return false;
+        String theme = prefs.getString("theme", "default");
+        if ("dark".equals(theme)) return true;
+        if ("white".equals(theme)) return false;
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
     }

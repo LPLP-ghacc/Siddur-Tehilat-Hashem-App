@@ -60,37 +60,30 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <!-- Кнопка для Китцур Шулхан Арух -->
-                <Button
-                    android:id="@+id/kitsurButton"
+                <LinearLayout
+                    style="@style/CardStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Китцур Шулхан Арух"
-                    android:textColor="@color/text4"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/pipButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="другая книга"
-                    android:textColor="@color/text4"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/imageLib"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:src="@drawable/library" />
 
+                    <Button
+                        android:id="@+id/enterLibButton"
+                        style="@style/ButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableTint="@color/accent"
+                        android:text="@string/goto_library"
+                        android:textColor="@color/text4"
+                        android:textSize="16sp"/>
 
-                <Button
-                    android:id="@+id/pip1Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="и еще другая книга"
-                    android:textColor="@color/text4"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

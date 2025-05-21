@@ -98,4 +98,10 @@
     <string name="weekly_parasha">Недельная глава:</string>
     <string name="weekly_parasha_format">Недельная глава: %s</string>
     <string name="lib">Библиотека</string>
+    <string name="location_unavailable">Не удалось получить данные геолокации.</string>
+    <string name="feature_not_supported">Функция недоступна</string>
+    <string name="default_theme">Системная</string>
+    <string name="dark_theme">Тёмная</string>
+    <string name="white_theme">Светлая</string>
+    <string name="goto_library">Перейти в Библиотеку (закрыто)</string>
 </resources>

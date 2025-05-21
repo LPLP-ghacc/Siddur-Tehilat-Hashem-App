@@ -77,21 +77,21 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayV
                     holder.dateTextView.setText("Сегодня");
                     holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.special_color1));
                 } else {
-                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
                     holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
                     holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
                 }
             } catch (Exception e) {
                 // Если не удалось распарсить дату, показываем заглушку
                 holder.dateTextView.setText("Дата неизвестна");
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
                 holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
                 holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
             }
         } else {
             // Для старых версий Android показываем дату без форматирования
             holder.dateTextView.setText(holiday.getDate() != null ? holiday.getDate() : "Дата неизвестна");
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bg1));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
             holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
             holder.dateTextView.setTextColor(ContextCompat.getColor(context, R.color.text4));
         }
