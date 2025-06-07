@@ -13,154 +13,157 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UselessParent">
 
-        <!-- Заголовок "Настройки" с иконкой -->
-        <LinearLayout
-            android:id="@+id/settings_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="PLACEHOLDER"
-                android:src="@android:drawable/ic_menu_preferences"
-                app:tint="@color/accent"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/settings_title"
-                android:textColor="@color/text4"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Карточка: Выбор языка -->
-        <LinearLayout
-            android:id="@+id/language_card"
-            style="@style/CardStyle"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/BlessingLanguage"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
-
-            <Spinner
-                android:id="@+id/language_spinner"
+            <!-- Заголовок "Настройки" с иконкой -->
+            <LinearLayout
+                android:id="@+id/settings_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:scrollbarSize="18sp" />
-        </LinearLayout>
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
-        <!-- Карточка: Размер текста -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="PLACEHOLDER"
+                    android:src="@android:drawable/ic_menu_preferences"
+                    app:tint="@color/accent"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/settings_title"
+                    android:textColor="@color/text4"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Карточка: Выбор языка -->
+            <LinearLayout
+                android:id="@+id/language_card"
+                style="@style/CardStyle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/BlessingLanguage"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/language_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:scrollbarSize="18sp" />
+            </LinearLayout>
+
+            <!-- Карточка: Размер текста -->
+            <LinearLayout
+                android:id="@+id/text_size_card"
+                style="@style/CardStyle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/TextSize"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/text_size_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:max="100" />
+            </LinearLayout>
+
+            <!-- Карточка: Выбор темы -->
+            <LinearLayout
+                android:id="@+id/theme_card"
+                style="@style/CardStyle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Theme"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/theme_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:scrollbarSize="18sp" />
+            </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/text_size_card"
-            style="@style/CardStyle"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+                android:id="@+id/about"
+                style="@style/CardStyle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/TextSize"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_app_title"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp" />
 
-            <SeekBar
-                android:id="@+id/text_size_seekbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:max="100" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_app_text"
+                    android:textColor="@color/text4"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-        <!-- Карточка: Выбор темы -->
-        <LinearLayout
-            android:id="@+id/theme_card"
-            style="@style/CardStyle"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            <!-- Карточка: Цдака -->
+            <LinearLayout
+                android:id="@+id/Tzdoka"
+                style="@style/CardStyle"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Theme"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:src="@drawable/tsdoka_image"
+                    android:contentDescription="@string/tdoka"
+                    android:scaleType="centerCrop" />
 
-            <Spinner
-                android:id="@+id/theme_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:scrollbarSize="18sp" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/donate_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/donate_button"
+                    android:textColor="@color/text4"
+                    style="@style/ButtonStyle" />
 
-        <!-- Карточка: О приложении -->
-        <LinearLayout
-            android:id="@+id/about"
-            style="@style/CardStyle"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="vertical">
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_app_title"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_app_text"
-                android:textColor="@color/text4"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <!-- Карточка: Цдака -->
-        <LinearLayout
-            android:id="@+id/Tzdoka"
-            style="@style/CardStyle"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:src="@drawable/tsdoka_image"
-                android:contentDescription="@string/tdoka"
-                android:scaleType="centerCrop" />
-
-            <Button
-                android:id="@+id/donate_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:text="@string/donate_button"
-                android:textColor="@color/text4"
-                style="@style/ButtonStyle" />
-        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

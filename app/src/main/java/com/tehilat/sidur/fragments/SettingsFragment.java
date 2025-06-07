@@ -104,7 +104,7 @@ public class SettingsFragment extends Fragment {
                 if (!selectedTheme.equals(prefs.getString("theme", "default"))) {
                     prefs.edit().putString("theme", selectedTheme).apply();
                     applyTheme(selectedTheme);
-                    requireActivity().recreate(); // Пересоздаём активити для применения темы
+                    requireActivity().recreate();
                 }
             }
 

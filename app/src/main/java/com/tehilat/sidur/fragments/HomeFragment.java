@@ -36,7 +36,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.Gson;
 import com.tehilat.sidur.CompassActivity;
 import com.tehilat.sidur.R;
 import com.tehilat.sidur.ViewerPageActivity;
@@ -46,7 +45,6 @@ import com.tehilat.sidur.calendar.JewishCalendar;
 import com.tehilat.sidur.calendar.JewishController;
 import com.tehilat.sidur.calendar.JewishHolidayHelper;
 import com.tehilat.sidur.models.EventsViewModel;
-import org.jetbrains.annotations.Contract;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -89,9 +87,6 @@ public class HomeFragment extends Fragment {
     private double userLongitude = 0.0;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
-    private static final String PREF_CANDLE_LIGHTING = "candle_lighting";
-    private static final String PREF_HAVDALAH = "havdalah";
-    private static final String PREF_WEEKLY_PARASHA = "weekly_parasha"; // Ключ для кэширования
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -116,7 +111,7 @@ public class HomeFragment extends Fragment {
         // Инициализация элементов для времени Шаббата и недельной главы
         candleLightingText = rootView.findViewById(R.id.candle_lighting_time);
         havdalahText = rootView.findViewById(R.id.havdalah_time);
-        weeklyParashaText = rootView.findViewById(R.id.weekly_parasha); // Инициализация нового TextView
+        weeklyParashaText = rootView.findViewById(R.id.weekly_parasha);
 
         // Инициализация геолокации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -139,10 +134,6 @@ public class HomeFragment extends Fragment {
 
         // Обработчик кнопки "Показать все"
         showAllButton.setOnClickListener(v -> toggleEventsDisplay());
-
-        // Загрузка сохраненных данных о Шаббате и недельной главе (для оффлайн-режима)
-        loadShabbatTimes();
-        loadWeeklyParasha();
 
         // Проверка разрешений и запрос времени Шаббата и недельной главы
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -167,8 +158,6 @@ public class HomeFragment extends Fragment {
                 fetchWeeklyParasha();
             } else {
                 Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-                loadShabbatTimes();
-                loadWeeklyParasha();
             }
         }
     }
@@ -205,7 +194,6 @@ public class HomeFragment extends Fragment {
                             } else {
                                 requireActivity().runOnUiThread(() -> {
                                     Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
-                                    loadShabbatTimes();
                                 });
                             }
                         }
@@ -214,7 +202,6 @@ public class HomeFragment extends Fragment {
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(), "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-                loadShabbatTimes();
             });
         }
     }
@@ -281,15 +268,15 @@ public class HomeFragment extends Fragment {
 
                         if (candleLighting != null) {
                             candleLightingText.setText(String.format(getString(R.string.candle_lighting_format), candleLighting));
-                            prefs.edit().putString(PREF_CANDLE_LIGHTING, candleLighting).apply();
                         } else {
                             Log.w("CandleLighting", "No candle lighting time found for target date: " + candleDate);
+                            candleLightingText.setText(R.string.no_data_available);
                         }
                         if (havdalah != null) {
                             havdalahText.setText(String.format(getString(R.string.havdalah_format), havdalah));
-                            prefs.edit().putString(PREF_HAVDALAH, havdalah).apply();
                         } else {
                             Log.w("Havdalah", "No havdalah time found for target date: " + havdalahDate);
+                            havdalahText.setText(R.string.no_data_available);
                         }
                     });
                 }
@@ -300,40 +287,19 @@ public class HomeFragment extends Fragment {
                 if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), getString(R.string.error_on_load) + errorMessage, Toast.LENGTH_SHORT).show();
-                    loadShabbatTimes();
+                    candleLightingText.setText(R.string.no_data_available);
+                    havdalahText.setText(R.string.no_data_available);
                 });
             }
         });
     }
 
-    private void loadShabbatTimes() {
-        String savedCandleLighting = prefs.getString(PREF_CANDLE_LIGHTING, null);
-        String savedHavdalah = prefs.getString(PREF_HAVDALAH, null);
-
-        if (savedCandleLighting != null) {
-            candleLightingText.setText(String.format(getString(R.string.candle_lighting_format), savedCandleLighting));
-        }
-        if (savedHavdalah != null) {
-            havdalahText.setText(String.format(getString(R.string.havdalah_format), savedHavdalah));
-        }
-    }
-
-    // Метод для загрузки сохранённой недельной главы
-    private void loadWeeklyParasha() {
-        String savedParasha = prefs.getString(PREF_WEEKLY_PARASHA, null);
-        if (savedParasha != null) {
-            weeklyParashaText.setText(String.format(getString(R.string.weekly_parasha_format), savedParasha));
-        }
-    }
-
-    // Метод для загрузки недельной главы из RSS
     private void fetchWeeklyParasha() {
         String language = getHebcalLanguage();
         String rssUrl = "https://www.hebcal.com/sedrot/index-" + language + ".xml";
         new FetchParashaTask().execute(rssUrl);
     }
 
-    // AsyncTask для загрузки и парсинга RSS
     private class FetchParashaTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -378,10 +344,9 @@ public class HomeFragment extends Fragment {
             requireActivity().runOnUiThread(() -> {
                 if (result != null) {
                     weeklyParashaText.setText(result);
-                    prefs.edit().putString(PREF_WEEKLY_PARASHA, result).apply();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.error_on_load), Toast.LENGTH_SHORT).show();
-                    loadWeeklyParasha();
+                    weeklyParashaText.setText(R.string.no_data_available);
                 }
             });
         }
@@ -422,7 +387,7 @@ public class HomeFragment extends Fragment {
                                     userLatitude = location.getLatitude();
                                     userLongitude = location.getLongitude();
                                     fetchEvents();
-                                    fetchWeeklyParasha(); // Обновляем недельную главу при обновлении данных
+                                    fetchWeeklyParasha();
                                 } else {
                                     requireActivity().runOnUiThread(() -> {
                                         Toast.makeText(getContext(), "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
@@ -440,7 +405,7 @@ public class HomeFragment extends Fragment {
             }
         } else {
             fetchEvents();
-            fetchWeeklyParasha(); // Обновляем недельную главу при обновлении данных
+            fetchWeeklyParasha();
         }
     }
 
@@ -457,7 +422,6 @@ public class HomeFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     List<JewishController.Item> events = response.getItems();
                     eventsViewModel.setEvents(events);
-                    cacheData("cached_events", events);
 
                     List<JewishController.Item> holidays = new ArrayList<>();
                     for (JewishController.Item item : events) {
@@ -466,7 +430,6 @@ public class HomeFragment extends Fragment {
                         }
                     }
                     eventsViewModel.setHolidays(holidays);
-                    cacheData("cached_holidays", holidays);
 
                     swipeRefreshLayout.setRefreshing(false);
                 });
@@ -481,12 +444,6 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
-    }
-
-    private void cacheData(String key, List<JewishController.Item> data) {
-        Gson gson = new Gson();
-        String json = gson.toJson(data);
-        prefs.edit().putString(key, json).apply();
     }
 
     private String getHebcalLanguage() {
@@ -640,7 +597,6 @@ public class HomeFragment extends Fragment {
     }
 
     @NonNull
-    @Contract(pure = true)
     private String getPrayerFilePath(int position) {
         String lang = prefs.getString("prayer_language", "עברית");
         String langCode;

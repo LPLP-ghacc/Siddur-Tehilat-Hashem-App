@@ -27,8 +27,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tehilat.sidur.api.HebcalApiClient;
 import com.tehilat.sidur.calendar.JewishController;
 import com.tehilat.sidur.fragments.AllPrayersFragment;
@@ -37,7 +35,6 @@ import com.tehilat.sidur.fragments.SettingsFragment;
 import com.tehilat.sidur.fragments.UpcomingHolidaysFragment;
 import com.tehilat.sidur.models.EventsViewModel;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private EventsViewModel eventsViewModel;
     private SharedPreferences prefs;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private static final String PREF_EVENTS_KEY = "cached_events";
-    private static final String PREF_HOLIDAYS_KEY = "cached_holidays";
 
     BottomNavigationView botNav;
     HomeFragment home = new HomeFragment();
@@ -79,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Инициализация геолокации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Загрузка кэшированных данных
-        loadCachedData();
 
         // Проверка разрешений и загрузка данных
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -145,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 fetchData();
             } else {
                 Toast.makeText(this, "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-                loadCachedData();
             }
         }
     }
@@ -172,18 +163,15 @@ public class MainActivity extends AppCompatActivity {
                                 if (isNetworkAvailable()) {
                                     fetchEventsAndHolidays(queryParams);
                                 } else {
-                                    Toast.makeText(MainActivity.this, "Нет интернета. Используются сохранённые данные.", Toast.LENGTH_SHORT).show();
-                                    loadCachedData();
+                                    Toast.makeText(MainActivity.this, "Нет интернета. Данные недоступны.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(MainActivity.this, "Не удалось определить местоположение", Toast.LENGTH_SHORT).show();
-                                loadCachedData();
                             }
                         }
                     });
         } catch (SecurityException e) {
             Toast.makeText(this, "Требуется разрешение на доступ к местоположению", Toast.LENGTH_SHORT).show();
-            loadCachedData();
         }
     }
 
@@ -195,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
                     // Обрабатываем события
                     List<JewishController.Item> events = response.getItems();
                     eventsViewModel.setEvents(events);
-                    cacheData(PREF_EVENTS_KEY, events);
 
                     // Обрабатываем праздники (фильтруем только категории "holiday")
                     List<JewishController.Item> holidays = new ArrayList<>();
@@ -205,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     eventsViewModel.setHolidays(holidays);
-                    cacheData(PREF_HOLIDAYS_KEY, holidays);
                 });
             }
 
@@ -213,38 +199,9 @@ public class MainActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 runOnUiThread(() -> {
                     Toast.makeText(MainActivity.this, "Ошибка загрузки данных: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    loadCachedData();
                 });
             }
         });
-    }
-
-    private void loadCachedData() {
-        List<JewishController.Item> cachedEvents = loadCachedList(PREF_EVENTS_KEY);
-        if (cachedEvents != null && !cachedEvents.isEmpty()) {
-            eventsViewModel.setEvents(cachedEvents);
-        }
-
-        List<JewishController.Item> cachedHolidays = loadCachedList(PREF_HOLIDAYS_KEY);
-        if (cachedHolidays != null && !cachedHolidays.isEmpty()) {
-            eventsViewModel.setHolidays(cachedHolidays);
-        }
-    }
-
-    private void cacheData(String key, List<JewishController.Item> data) {
-        Gson gson = new Gson();
-        String json = gson.toJson(data);
-        prefs.edit().putString(key, json).apply();
-    }
-
-    private List<JewishController.Item> loadCachedList(String key) {
-        String json = prefs.getString(key, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<JewishController.Item>>() {}.getType();
-            return gson.fromJson(json, type);
-        }
-        return new ArrayList<>();
     }
 
     private String getHebcalLanguage() {

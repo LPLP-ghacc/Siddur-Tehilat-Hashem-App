@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Сидур Техилат ха-Шем</string>
+    <string name="app_name">Siddur Live</string>
     <string name="holidays">Праздники</string>
     <string name="daily">Ежедневные молитвы</string>
     <string name="settings">Настройки</string>
@@ -104,4 +104,6 @@
     <string name="dark_theme">Тёмная</string>
     <string name="white_theme">Светлая</string>
     <string name="goto_library">Перейти в Библиотеку (закрыто)</string>
+    <string name="clear_cache_button">Очистить данные приложения.</string>
+    <string name="no_data_available">Данные недоступны</string>
 </resources>

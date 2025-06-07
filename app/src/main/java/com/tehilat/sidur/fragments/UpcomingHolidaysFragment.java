@@ -30,7 +30,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.Gson;
 import com.tehilat.sidur.api.HebcalApiClient;
 import com.tehilat.sidur.adapters.HolidayAdapter;
 import com.tehilat.sidur.calendar.JewishController;
@@ -92,6 +91,16 @@ public class UpcomingHolidaysFragment extends Fragment {
             }
             progressBar.setVisibility(View.GONE);
         });
+
+        // Проверка разрешений и запуск загрузки данных
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            refreshData();
+        }
 
         return rootView;
     }
@@ -159,7 +168,7 @@ public class UpcomingHolidaysFragment extends Fragment {
                 userLatitude, userLongitude, language);
 
         if (!isNetworkAvailable()) {
-            Toast.makeText(getContext(), "Нет интернета. Используются сохранённые данные.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Нет интернета. Данные недоступны.", Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
@@ -171,7 +180,6 @@ public class UpcomingHolidaysFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     List<JewishController.Item> events = response.getItems();
                     eventsViewModel.setEvents(events);
-                    cacheData("cached_events", events);
 
                     List<JewishController.Item> holidays = new ArrayList<>();
                     for (JewishController.Item item : events) {
@@ -181,7 +189,6 @@ public class UpcomingHolidaysFragment extends Fragment {
                     }
                     Log.d("UpcomingHolidays", "Holidays fetched: " + holidays.size());
                     eventsViewModel.setHolidays(holidays);
-                    cacheData("cached_holidays", holidays);
 
                     swipeRefreshLayout.setRefreshing(false);
                 });
@@ -196,12 +203,6 @@ public class UpcomingHolidaysFragment extends Fragment {
                 });
             }
         });
-    }
-
-    private void cacheData(String key, List<JewishController.Item> data) {
-        Gson gson = new Gson();
-        String json = gson.toJson(data);
-        prefs.edit().putString(key, json).apply();
     }
 
     private String getHebcalLanguage() {

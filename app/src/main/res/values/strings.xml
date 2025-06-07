@@ -122,6 +122,8 @@
     <string name="dark_theme">Dark</string>
     <string name="white_theme">White</string>
     <string name="goto_library">Go to the Library (closed)</string>
+    <string name="clear_cache_button">Clear cache</string>
+    <string name="no_data_available">No data available</string>
 
     <string-array name="morning_prayers">
         <item>@string/shararit</item>
