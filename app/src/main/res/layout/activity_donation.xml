@@ -15,21 +15,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
-    <!-- Выбор получателя -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/donation_recipient"
-        android:textColor="@color/text4"
-        android:textSize="18sp" />
-
-    <Spinner
-        android:id="@+id/recipient_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:layout_marginBottom="16dp" />
-
     <!-- Выбор суммы -->
     <TextView
         android:layout_width="wrap_content"
@@ -49,14 +34,31 @@
         android:padding="8dp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Кнопка отправки -->
     <Button
-        android:id="@+id/submit_donation_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/button_donate_international"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/submit_donation"
-        android:textColor="@color/text4"
-        style="@style/ButtonStyle" />
+        android:text="Support Project (International)"
+        android:backgroundTint="@color/accent"
+        android:textColor="@android:color/white" />
 
+    <Button
+        android:id="@+id/button_donate_russia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Поддержать (ЮKassa)"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/accent"
+        android:textColor="@android:color/white" />
+
+
+    <TextView
+        android:id="@+id/donation_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ваше пожертвование является добровольным и не подразумевает получения товаров или услуг. Спасибо за вашу поддержку!"
+        android:textColor="@color/text4"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
 </LinearLayout>

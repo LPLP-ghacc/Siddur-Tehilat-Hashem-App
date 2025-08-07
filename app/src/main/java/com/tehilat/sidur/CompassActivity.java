@@ -118,32 +118,40 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
                 (float) userLocation.getAltitude(),
                 System.currentTimeMillis()
         );
-        bearingToWailingWall += geoField.getDeclination();
+        bearingToWailingWall = (bearingToWailingWall + 360) % 360;
     }
 
     private void updateCompass(float azimuth) {
-        if (!hasLocation) return; // Не обновляем компас, пока не получили местоположение
+        if (!hasLocation) return;
 
-        // Применяем low-pass filter для сглаживания азимута
-        smoothedAzimuth = smoothedAzimuth + alpha * (azimuth - smoothedAzimuth);
+        // Normalize azimuth
+        azimuth = (azimuth + 360) % 360;
 
-        // Вычисляем угол, который нужно повернуть компас (сглаженный азимут устройства минус направление на Стену Плача)
-        float adjustedDegree = -smoothedAzimuth - bearingToWailingWall;
+        // Smooth filter
+        float delta = azimuth - smoothedAzimuth;
+        if (delta > 180) delta -= 360;
+        else if (delta < -180) delta += 360;
+        smoothedAzimuth += alpha * delta;
 
-        // Обновляем текст направления с учётом текущего азимута
-        float displayedBearing = (bearingToWailingWall + smoothedAzimuth + 360) % 360; // Нормализуем угол (0–360 градусов)
+        // Compute rotation
+        float targetDegree = - (smoothedAzimuth - bearingToWailingWall);
+        targetDegree = (targetDegree + 360) % 360;
+
+        // Update text
+        float displayedBearing = (bearingToWailingWall - smoothedAzimuth + 360) % 360;
         directionText.setText(String.format(getString(R.string.direction_format), displayedBearing));
 
-        // Анимация вращения компаса
+        // Animate
         RotateAnimation rotateAnimation = new RotateAnimation(
                 currentDegree,
-                adjustedDegree,
+                targetDegree,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(getResources().getInteger(R.integer.compass_animation_duration));
+        rotateAnimation.setDuration(500);
         rotateAnimation.setFillAfter(true);
         compassImage.startAnimation(rotateAnimation);
-        currentDegree = adjustedDegree;
+
+        currentDegree = targetDegree;
     }
 
     @Override

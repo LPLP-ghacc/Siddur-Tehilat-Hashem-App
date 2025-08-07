@@ -110,6 +110,7 @@
     <string name="submit_donation">Send</string>
     <string name="app_language">App Language</string>
     <string name="mein_shalosh">Mein Shalosh</string>
+
     <string name="avdala">Havdalah</string>
     <string name="nasi">The Nasi</string>
     <string name="weekly_parasha">Weekly Parashat:</string>
@@ -124,6 +125,14 @@
     <string name="goto_library">Go to the Library (closed)</string>
     <string name="clear_cache_button">Clear cache</string>
     <string name="no_data_available">No data available</string>
+    <string name="donation_success_synagogue">Your donation will be sent to %1$s.</string>
+    <string name="donation_success_dev">Your donation will be sent to developer support.</string>
+    <string name="donation_thank_you">Thank you for your donation!</string>
+    <string name="donation_error_amount">Please enter the amount</string>
+    <string name="donation_invalid_amount">The amount must be greater than 0</string>
+    <string name="donation_invalid_input">Please enter the correct amount.</string>
+    <string name="synagogue">The Synagogue</string>
+    <string name="app_developers">Application Developers</string>
 
     <string-array name="morning_prayers">
         <item>@string/shararit</item>

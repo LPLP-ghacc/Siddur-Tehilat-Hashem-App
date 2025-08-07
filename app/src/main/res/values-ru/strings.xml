@@ -106,4 +106,12 @@
     <string name="goto_library">Перейти в Библиотеку (закрыто)</string>
     <string name="clear_cache_button">Очистить данные приложения.</string>
     <string name="no_data_available">Данные недоступны</string>
+    <string name="donation_success_synagogue">Ваше пожертвование будет отправлено в %1$s.</string>
+    <string name="donation_success_dev">Ваше пожертвование будет отправлено на поддержку разработчиков.</string>
+    <string name="donation_thank_you">Спасибо за ваше пожертвование!</string>
+    <string name="donation_error_amount">Пожалуйста, введите сумму</string>
+    <string name="donation_invalid_amount">Сумма должна быть больше 0</string>
+    <string name="donation_invalid_input">Пожалуйста, введите корректную сумму</string>
+    <string name="synagogue">Синагога</string>
+    <string name="app_developers">Разработчики приложения</string>
 </resources>
