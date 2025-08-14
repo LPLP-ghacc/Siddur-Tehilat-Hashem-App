@@ -80,6 +80,22 @@ public class ViewerPageActivity extends AppCompatActivity {
             return;
         }
 
+        if(filePath.contains("test.html")){
+            new Thread(() -> {
+                String htmlContent = readFileFrom(filePath);
+                htmlContent = replacePlaceholdersWithLocalizedStrings(htmlContent);
+                boolean isDarkTheme = isDarkThemeActive();
+                String finalContent = wrapHtmlContent(htmlContent, isDarkTheme);
+                runOnUiThread(() -> {
+                    controller.setVisibility(View.INVISIBLE);
+                    controller.loadDataWithBaseURL("file:///android_asset/", finalContent, "text/html", "UTF-8", null);
+                    controller.setVisibility(View.VISIBLE);
+                });
+            }).start();
+
+            return;
+        }
+
         // Асинхронная загрузка контента
         new Thread(() -> {
             String htmlContent = readFileFrom(filePath);
@@ -111,16 +127,15 @@ public class ViewerPageActivity extends AppCompatActivity {
         }
     }
 
-    @NonNull
-    @Contract(pure = true)
-    private String wrapHtmlContent(String originalHtml, boolean isDarkTheme) {
+    @NonNull @Contract(pure = true)
+    private String wrapHtmlContent(String originalHtml, boolean isDarkTheme)
+    {
         String themeCss = isDarkTheme ? readFileFrom("file:///android_asset/pages/styles/dark.css") : readFileFrom("file:///android_asset/pages/styles/white.css");
-        return "<html><head>" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes\">" +
-                themeCss +
-                "</head>" +
-                originalHtml +
-                "</html>";
+        return "<html><head>"
+                + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes\">"
+                + themeCss + "</head>"
+                // "<script src=\"file:///android_asset/pages/scripts/menu.js\"></script>"
+                + originalHtml + "</html>";
     }
 
     private String replacePlaceholdersWithLocalizedStrings(String htmlContent) {

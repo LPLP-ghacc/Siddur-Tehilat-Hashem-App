@@ -19,42 +19,8 @@
         </ul>
     </div>
 </div>
+<script src="file:///android_asset/pages/scripts/menu.js"></script>
 
-<script>
-    const menu = document.getElementById('menu');
-    const currentSection = document.querySelector('.current-section');
-
-    function toggleDropdown() {
-        menu.classList.toggle('open');
-    }
-
-    function jumpToSection(id) {
-        const section = document.getElementById(id);
-        if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-            menu.classList.remove('open');
-            updateCurrentSection(id);
-        }
-    }
-
-    function updateCurrentSection(id) {
-        currentSection.textContent = document.getElementById(id).textContent;
-    }
-
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('.section');
-        let currentId = '';
-        sections.forEach((section) => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom > 100) {
-                currentId = section.id;
-            }
-        });
-        if (currentId) {
-            updateCurrentSection(currentId);
-        }
-    });
-</script>
 
 <h3 class="hint">In the year when the Tabernacle was first dedicated, on each of the first twelve days of the month of Nissan, a Nassi (Leader) from one of the twelve tribes of Israel brought a special offering. The custom is to say the section of Torah that describes each offering on the day it was offered, followed by an additional prayer. On the thirteenth day of Nissan, an additional section of Torah is said, without the additional prayer.</h3>
 <div id="section0" class="section"><h2>The First of Nissan</h2></div>

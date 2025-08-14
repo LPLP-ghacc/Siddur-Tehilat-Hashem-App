@@ -1,21 +1,4 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script>
-    function toggleText(textId) {
-      const text = document.getElementById(`hidden-text${textId}`);
-      const button = event.target;
-
-      // Toggle text visibility
-      if (text.style.display === 'none') {
-        text.style.display = 'block';
-        button.querySelector('i').classList.remove('fa-plus');
-        button.querySelector('i').classList.add('fa-minus');  // Change to minus icon
-      } else {
-        text.style.display = 'none';
-        button.querySelector('i').classList.remove('fa-minus');
-        button.querySelector('i').classList.add('fa-plus');  // Change to plus icon
-      }
-    }
-</script>
 <body>
 <div class="header">
     <div class="dropdown">
@@ -32,45 +15,7 @@
         </ul>
     </div>
 </div>
-
-<script>
-    const menu = document.getElementById('menu');
-    const currentSection = document.querySelector('.current-section');
-
-    function toggleDropdown() {
-        menu.classList.toggle('open');
-    }
-
-    function jumpToSection(id) {
-        const section = document.getElementById(id);
-        if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-            menu.classList.remove('open');
-            updateCurrentSection(id);
-        }
-    }
-
-    function updateCurrentSection(id) {
-        currentSection.textContent = document.getElementById(id).textContent;
-    }
-
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('.section');
-        let currentId = '';
-        sections.forEach((section) => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom > 100) {
-                currentId = section.id;
-            }
-        });
-        if (currentId) {
-            updateCurrentSection(currentId);
-        }
-    });
-</script>
-
-
-
+<script src="file:///android_asset/pages/scripts/menu.js"></script>
 
 <div id="section0" class="section"><h2>{{korbanot}}</h2></div>
 

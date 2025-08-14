@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Молитвы с навигацией</title>
+    <style>
+        /* Define CSS custom properties for theming */
+        :root {
+            --bg-primary: #111112;
+            --bg-secondary: #1e2024;
+            --bg-header: #31353b;
+            --text-primary: #ffffff;
+            --text-accent: #165ba6;
+            --text-muted: rgba(112, 113, 113, 0.9);
+            --bg-muted: rgba(112, 113, 113, 0.2);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+            --header-height: 60px; /* Высота заголовка */
+            --scroll-margin: 80px; /* Отступ для прокрутки */
+        }
+
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            user-select: none;
+            min-height: 100vh;
+            width: 100%;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', 'Times New Roman', Times, serif;
+            line-height: 1.8;
+            font-size: clamp(16px, 2vw, 18px);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(180deg, var(--bg-header), rgba(49, 53, 59, 0.8));
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            min-height: var(--header-height);
+            box-sizing: border-box;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            z-index: 2000;
+            text-align: center;
+        }
+
+        /* Headings */
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin: 0.5rem 0 1rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: var(--text-accent);
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            text-align: right;
+            margin: 0.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #eaeaea;
+            font-size: clamp(1.4rem, 3.5vw, 1.7rem);
+            background: var(--bg-muted);
+            margin: 0.5rem 0 1rem;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        /* Hint text */
+        .hint {
+            color: var(--text-muted);
+            font-size: clamp(1.3rem, 3vw, 1.6rem);
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+
+        /* Insert element */
+        .insert {
+            color: var(--text-muted);
+            background: var(--bg-muted);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .current-section {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            cursor: pointer;
+            text-align: center;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            font-weight: 600;
+            color: var(--text-accent);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .current-section:hover,
+        .current-section:focus {
+            color: var(--text-primary);
+            transform: scale(1.02);
+        }
+
+        .current-section:focus {
+            outline: 2px solid var(--text-accent);
+            outline-offset: 2px;
+        }
+
+        /* Hamburger icon */
+        .current-section::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 16px;
+            background: linear-gradient(
+                to bottom,
+                var(--text-accent) 3px,
+                transparent 3px 6px,
+                var(--text-accent) 6px 9px,
+                transparent 9px 12px,
+                var(--text-accent) 12px 15px,
+                transparent 15px
+            );
+            transition: var(--transition);
+        }
+
+        /* Dropdown menu */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(var(--header-height) + 0.5rem);
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            max-height: 70vh;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition), opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown-menu.open {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu li {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            text-align: center;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-accent);
+            transition: var(--transition);
+        }
+
+        .dropdown-menu li:hover,
+        .dropdown-menu li:focus {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: translateX(5px);
+        }
+
+        .dropdown-menu li:focus {
+            outline: 2px solid var(--text-accent);
+        }
+
+        /* Sections */
+        .section {
+            margin-top: calc(var(--header-height) + 2rem);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            color: var(--text-accent);
+            transition: var(--transition);
+            scroll-margin-top: var(--scroll-margin);
+        }
+
+        /* Content layout */
+        .cont {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* Insert button */
+        .insertButton {
+            display: block;
+            width: calc(100% - 1rem);
+            margin: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-muted);
+            color: var(--text-muted);
+            font-size: clamp(1.3rem, 3vw, 1.5rem);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .insertButton:hover,
+        .insertButton:focus {
+            background: var(--text-accent);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .insertButton:focus {
+            outline: 2px solid var(--text-accent);
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0 1.5rem;
+            width: 100%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            :root {
+                --scroll-margin: 100px; /* Увеличенный отступ для мобильных */
+            }
+
+            .dropdown {
+                max-width: 100%;
+            }
+
+            .section {
+                width: 95%;
+            }
+
+            .cont {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                max-height: 50vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --scroll-margin: 120px; /* Еще больший отступ для маленьких экранов */
+            }
+
+            h1 {
+                font-size: clamp(1.5rem, 4vw, 2rem);
+            }
+
+            h2,
+            h3,
+            .hint,
+            .insertButton {
+                font-size: clamp(1.1rem, 3vw, 1.3rem);
+            }
+
+            .current-section {
+                font-size: clamp(1rem, 2vw, 1.2rem);
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="dropdown">
+        <div class="current-section" id="current-section">Выберите раздел</div>
+        <ul class="dropdown-menu" id="menu-list"></ul>
+    </div>
+</header>
+
+<div class="container">
+    <div id="section0" class="section">
+        <h2>Модэ Ани</h2>
+    </div>
+</div>
+<h3>Следующая фраза произносится еще в постели до омовения рук. Ее (в отличие от других благословений) можно читать даже до омовения рук, т.к. в ее тексте не содержится Имени Вс-вышнего. Поэтому пробудившись от сна, человек должен вознести благодарность Создателю за свое возвращение к жизни:</h3>
+<h1>БЛАГОДАРЮ ТЕБЯ, ВЛАДЫКА ЖИВОЙ И ВЕЧНЫЙ, ЗА ТО, ЧТО ТЫ, ПО МИЛОСТИ СВОЕЙ, ВОЗВРАТИЛ МНЕ ДУШУ МОЮ. ВЕЛИКА МОЯ ВЕРА В ТЕБЯ.</h1>
+<br>
+<h3>До того как выйти из дома, произносят все нижеперечисленные благословения, а затем идут в синагогу на утреннюю службу «Шахарит».</h3>
+<h3>После сна делают омовение рук чтобы избавиться от нечистоты оставшаяся на кончиках пальцев спящего, как известно, что сон это 1/60 смерти.</h3>
+<h3>Встав с постели, следует сразу же омыть руки, трижды поливая водой из сосуда попеременно на правую и левую кисти рук чтобы избавиться от нечистоты во время сна, оставшаяся на кончиках пальцев. Затем произносят благословение:</h3>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ДАВШИЙ НАМ ПОВЕЛЕНИЕ ОБ ОМОВЕНИИ РУК.</h1>
+<br>
+<h3>Следующее благословение произносят после отправления естественных надобностей. Утром это благословение произносят даже в том случае, если нет необходимости в отправлении естественных надобностей:</h3>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, КОТОРЫЙ ПО МУДРОСТИ СВОЕЙ СОЗДАЛ ЧЕЛОВЕКА, СОТВОРИВ ЕГО ТЕЛО С НЕОБХОДИМЫМИ ПОЛОСТЯМИ И ОТВЕРСТИЯМИ. ОТКРЫТО И ИЗВЕСТНО ТЕБЕ, ВОССЕДАЮЩЕМУ НА СЛАВНОМ ПРЕСТОЛЕ СВОЕМ, ЧТО ЕСЛИ ЗАКРОЕТСЯ ОДНО ИЗ ОТВЕРСТИЙ ИЛИ ОТКРОЕТСЯ ОДНА ИЗ ПОЛОСТЕЙ, ЧЕЛОВЕК НЕ СМОЖЕТ ПРОСУЩЕСТВОВАТЬ НИ ЧАСА. БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, ИСЦЕЛЯЮЩИЙ ВСЕ ЖИВОЕ И ТВОРЯЩИЙ ЧУДЕСА.</h1>
+<br>
+<h1>БОГ МОЙ! ДУША, КОТОРУЮ ТЫ ДАРОВАЛ МНЕ, ЧИСТА. ТЫ СОТВОРИЛ ЕЕ, ТЫ СОЗДАЛ ЕЕ, ТЫ ВДОХНУЛ ЕЕ В МЕНЯ И ТЫ ПОДДЕРЖИВАЕШЬ ЕЕ СУЩЕСТВОВАНИЕ ВО МНЕ И В БУДУЩЕМ ЗАБЕРЕШЬ ЕЕ У МЕНЯ, А ЗАТЕМ ВЕРНЕШЬ ЕЕ МНЕ В ГРЯДУЩИЕ ВРЕМЕНА. ВСЕ ВРЕМЯ, ПОКА ДУША ОБИТАЕТ В ТЕЛЕ МОЕМ, БУДУ БЛАГОДАРИТЬ ТЕБЯ, ГОСПОДЬ, БОГ МОЙ И БОГ ОТЦОВ МОИХ, ВЛАДЫКА ВСЕХ ТВОРЕНИЙ, ВЛАСТЕЛИН ВСЕХ ДУШ. БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, ВОЗВРАЩАЮЩИЙ ДУШИ В ТЕЛА УМЕРШИХ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, НАДЕЛИВШИЙ СЕРДЦЕ МОЕ СПОСОБНОСТЬЮ ОТЛИЧАТЬ ДЕНЬ ОТ НОЧИ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ДАРУЮЩИЙ ЗРЕНИЕ СЛЕПЫМ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВОБОЖДАЮЩИЙ УЗНИКОВ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, РАСПРЯМЛЯЮЩИЙ СОГБЕННЫХ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОДЕВАЮЩИЙ НАГИХ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ВОЗВРАЩАЮЩИЙ СИЛЫ УСТАЛОМУ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ВОЗВЫШАЮЩИЙ СУШУ НАД ВОДАМИ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, НАПРАВЛЯЮЩИЙ ШАГИ ЧЕЛОВЕКА.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ДАВШИЙ МНЕ ВСЕ НЕОБХОДИМОЕ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ПРЕПОЯСЫВАЮЩИЙ ИЗРАИЛЬ МОГУЩЕСТВОМ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ВЕНЧАЮЩИЙ ИЗРАИЛЬ ВЕЛИКОЛЕПИЕМ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ЗА ТО, ЧТО ТЫ НЕ СОЗДАЛ МЕНЯ НЕЕВРЕЕМ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ЗА ТО, ЧТО ТЫ НЕ СОЗДАЛ МЕНЯ РАБОМ.</h1>
+<br>
+<h3>Женщины это благословение не произносят:</h3>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ЗА ТО, ЧТО ТЫ НЕ СОЗДАЛ МЕНЯ ЖЕНЩИНОЙ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ПРОГОНЯЮЩИЙ СОН С МОИХ ГЛАЗ И ДРЕМОТУ С МОИХ ВЕК.</h1>
+<br>
+<h1>И ДА БУДЕТ УГОДНО ТЕБЕ, ГОСПОДЬ, БОГ НАШ И БОГ ОТЦОВ НАШИХ, НАДЕЛИТЬ НАС ПРИЛЕЖАНИЕМ В ИЗУЧЕНИИ ТОРЫ ТВОЕЙ И УСЕРДИЕМ В ИСПОЛНЕНИИ ТВОИХ ЗАПОВЕДЕЙ; И НЕ ДОПУСКАЙ, ЧТОБЫ СОВЕРШАЛИ МЫ ГРЕХИ, ПРЕСТУПЛЕНИЯ И ЗЛОДЕЯНИЯ; И НЕ ПОСЫЛАЙ НАМ ИСПЫТАНИЕ И ПОЗОР; ДА НЕ ВОЗЬМЕТ В НАС ВЕРХ ЗЛОЕ НАЧАЛО, И ОТДАЛИ НАС ОТ ДУРНОГО ЧЕЛОВЕКА И ОТ ПЛОХОГО ТОВАРИЩА, И СДЕЛАЙ ТАК, ЧТОБЫ МЫ СЛЕДОВАЛИ ДОБРОМУ НАЧАЛУ, ЗАЛОЖЕННОМУ В НАС, И СОВЕРШАЛИ ДОБРЫЕ ДЕЛА; И ПОДЧИНИ СЕВЕ ГРЕХОВНУЮ НАШУ ПРИРОДУ. И ДА ОБРЕТЕМ МЫ СЕГОДНЯ И ВПРЕДЬ МИЛОСТЬ, ЛЮБОВЬ И МИЛОСЕРДИЕ В ГЛАЗАХ ТВОИХ И В ГЛАЗАХ ВСЕХ, КТО ВИДИТ НАС; И ОДАРИ НАС БЛАГОДАТНОЙ ЛЮБОВЬЮ. БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, ОДАРИВАЮЩИЙ БЛАГОДАТНОЙ ЛЮБОВЬЮ СВОЙ НАРОД, ИЗРАИЛЬ.</h1>
+<br>
+<h1>И ДА БУДЕТ УГОДНО ТЕБЕ, ГОСПОДЬ, БОГ МОЙ И БОГ ОТЦОВ МОИХ, ОБЕРЕГАТЬ МЕНЯ СЕГОДНЯ И ВПРЕДЬ ОТ ДЕРЗКИХ ЛЮДЕЙ И ОТ ДЕРЗОСТИ ВО МНЕ САМОМ, ОТ ДУРНОГО ЧЕЛОВЕКА, И ОТ ПЛОХОГО ТОВАРИЩА, И ОТ ЗЛОГО СОСЕДА, И ОТ НЕСЧАСТНОГО СЛУЧАЯ, ОТ ЗАВИСТЛИВОГО ВЗГЛЯДА И ОТ ЗЛОГО ЯЗЫКА, ОТ ДОНОСА, ОТ ЛЖЕСВИДЕТЕЛЬСТВА, ОТ ЛЮДСКОЙ НЕНАВИСТИ, ОТ КЛЕВЕТЫ, ОТ НАСИЛЬСТВЕННОЙ СМЕРТИ, ОТ ТЯЖЕЛЫХ БОЛЕЗНЕЙ, ОТ БЕДЫ И ОТ СМЕРТЕЛЬНОГО ВРАГА, ОТ ТЯЖЕЛОГО СУДА И НЕУСТУПЧИВОГО ИСТЦА - КАК ЕВРЕЯ, ТАК И НЕЕВРЕЯ, — И ОТ НАКАЗАНИЯ АДОМ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ПОВЕЛЕВШИЙ НАМ ПРОИЗНОСИТЬ СЛОВА ТОРЫ.</h1>
+<br>
+<h1>СДЕЛАЙ ТАК, ГОСПОДЬ, БОГ НАШ, ЧТОБЫ СЛОВА ТОРЫ ТВОЕЙ СТАЛИ УСЛАДОЙ НАШИХ УСТ И УСТ ВСЕХ СЫНОВ НАРОДА ТВОЕГО, ДОМА ИЗРАИЛЯ; И ДА БУДЕМ ВСЕ МЫ, И НАШИ ПОТОМКИ, И ПОТОМКИ ВСЕГО НАРОДА ТВОЕГО, ДОМА ИЗРАИЛЯ, ЗНАТЬ ИМЯ ТВОЕ И УЧИТЬ ТВОЮ ТОРУ БЕСКОРЫСТНО. БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, ОБУЧАЮЩИЙ ТОРЕ НАРОД СВОЙ, ИЗРАИЛЬ.</h1>
+<br>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ИЗБРАВШИЙ НАС ИЗ СРЕДЫ НАРОДОВ И ДАВШИЙ НАМ СВОЮ ТОРУ! БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, ДАЮЩИЙ ТОРУ.</h1>
+<br>
+<h1>И ГОСПОДЬ СКАЗАЛ МОШЕ СЛЕДУЮЩЕЕ: СКАЖИ АГАРОНУ И ДЕТЯМ ЕГО: ТАК БЛАГОСЛОВЛЯЙТЕ СЫНОВ ИЗРАИЛЯ, ГОВОРИТЕ ИМ:</h1>
+<br>
+<h1>БЛАГОСЛОВИТ ТЕБЯ ГОСПОДЬ И ОХРАНИТ ТЕБЯ. И БУДЕТ БЛАГОСКЛОНЕН К ТЕБЕ ГОСПОДЬ И ПОМИЛУЕТ ТЕБЯ. БУДЕТ БЛАГОВОЛИТЬ К ТЕБЕ ГОСПОДЬ И ПОШЛЕТ ТЕБЕ МИР.</h1>
+<br>
+<h1>И БЛАГОСЛОВЯТ ОНИ ИМЕНЕМ МОИМ СЫНОВ ИЗРАИЛЯ, А Я БЛАГОСЛОВЛЮ ИХ.</h1>
+<br>
+<h1>НЕ УСТАНОВЛЕНО ОГРАНИЧЕНИЙ ДЛЯ ШИРИНЫ КРАЯ ПОЛЯ, С КОТОРОГО УРОЖАЙ НЕ СНИМАЮТ, ОСТАВЛЯЯ ЕГО ДЛЯ БЕДНЯКОВ; ДЛЯ КОЛИЧЕСТВА ПЕРВЫХ ПЛОДОВ НОВОГО УРОЖАЯ, КОТОРЫЕ ПРИНОСЯТ В ХРАМ; НА ТО, СКОЛЬКО РАЗ СЛЕДУЕТ ПРИХОДИТЬ В ХРАМ В ТЕЧЕНИЕ КАЖДОГО ИЗ ТРЕХ ПРАЗДНИКОВ - ПЕСАХ, ШАВУОТ И СУКОТ; И НА ТО, СКОЛЬКО УСИЛИЙ СЛЕДУЕТ ЗАТРАТИТЬ НА ПОМОЩЬ БЛИЖНЕМУ; И ДЛЯ ВРЕМЕНИ, ПОСВЯЩАЕМОГО ИЗУЧЕНИЮ ТОРЫ. ВОТ ДОБРЫЕ ДЕЛА, ПЛОДЫ КОТОРЫХ ЧЕЛОВЕК ПОЖИНАЕТ В ЭТОМ МИРЕ, НО ЗАСЛУГА ЕГО СОХРАНЯЕТСЯ И ДЛЯ МИРА БУДУЩЕГО; ПОЧИТАНИЕ ОТЦА И МАТЕРИ, И ПОМОЩЬ БЛИЖНЕМУ, И РАННИЙ ПРИХОД В ДОМ УЧЕНИЯ УТРОМ И ВЕЧЕРОМ, И ГОСТЕПРИИМСТВО, И ЗАБОТА О БОЛЬНЫХ, И ПОМОЩЬ БЕДНЫМ НЕВЕСТАМ В УСТРОЙСТВЕ СВАДЬБЫ, И УЧАСТИЕ В ПОХОРОНАХ, И СОСРЕДОТОЧЕННОСТЬ ПРИ МОЛИТВЕ, И ПРИМИРЕНИЕ ПОССОРИВШИХСЯ ДРУЗЕЙ И СУПРУГОВ, И ИЗУЧЕНИЕ ТОРЫ, РАВНОЦЕННОЕ ВСЕМ ЭТИМ ЗАПОВЕДЯМ, ВМЕСТЕ ВЗЯТЫМ.</h1>
+<br>
+<!-- KORBANOT -->
+<div class="container">
+    <div id="section1" class="section">
+        <h2>Цицит</h2>
+    </div>
+</div>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ДАВШИЙ НАМ ЗАПОВЕДЬ О ЦИЦИТ.</h1>
+<div class="container">
+    <div id="section2" class="section">
+        <h2>Талит</h2>
+    </div>
+</div>
+<h1>БЛАГОСЛОВИ, ДУША МОЯ, ГОСПОДА! ГОСПОДЬ, БОГ МОЙ, ВЕЛИЧИЕ ТВОЕ БЕЗГРАНИЧНО. В СИЯНИЕ И ВЕЛИКОЛЕПИЕ ОБЛЕКСЯ ТЫ. ОКУТАН СВЕТОМ, СЛОВНО ПЛАЩОМ, ПРОСТИРАЕШЬ НЕБЕСА, СЛОВНО ПОЛОГ.</h1>
+<h3>Разверните талит и широко раскройте его, поцелуйте его верхний край и поверните его из положения, в котором он находится перед вами, пока он не окажется за вашей спиной. В этот момент начинайте благословение. Читая благословение, укройте голову и верхнюю часть тела талитом и имейте ввиду, что Б-г повелел нам закутываться в него, чтобы напоминать нам о необходимости выполнять все Его заповеди.</h3>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ПОВЕЛЕВШИМ НАМ ЗАКУТЫВАТЬСЯ В ЦИЦИТ.</h1>
+<h1>КАК ДРАГОЦЕННА МИЛОСТЬ ТВОЯ, ГОСПОДЬ! И СЫНЫ ЧЕЛОВЕЧЕСКИЕ ПОД СЕНЬЮ КРЫЛ ТВОИХ НАЙДУТ СЕБЕ ПРИБЕЖИЩЕ. УТОЛЯТ ОНИ ЖАЖДУ ВО ДВОРЦЕ ТВОЕМ, ИЗОБИЛУЮЩЕМ БЛАГАМИ; ИЗ ПОТОКА, БЕРУЩЕГО НАЧАЛО В РАЮ ТВОЕМ, НАПОИШЬ ИХ. ВЕДЬ ТЫ ВЛАСТВУЕШЬ НАД ИСТОЧНИКОМ ЖИЗНИ; И [СОКРОВЕННЫЙ СВЕТ ТВОИ ДА СТАНЕТ ЗРИМЫМ СВЕТ ДЛЯ НАС. ОСЕНИ ЛЮБОВЬЮ СВОЕЙ ТЕХ, КТО ЗНАЕТ ТЕБЯ, И МИЛОСТЬЮ СВОЕЙ — ПРЯМОДУШНЫХ.</h1>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ДАВШИЙ НАМ ЗАПОВЕДЬ ВОЗЛАГАТЬ ТФИЛИН.</h1>
+<h1>БЛАГОСЛОВЕН ТЫ, ГОСПОДЬ, БОГ НАШ, ВЛАДЫКА ВСЕЛЕННОЙ, ОСВЯТИВШИЙ НАС СВОИМИ ЗАПОВЕДЯМИ И ДАВШИЙ НАМ ЗАПОВЕДЬ О ТФИЛИН.</h1>
+<div class="container">
+    <div id="section3" class="section">
+        <h2>Шахарит</h2>
+    </div>
+</div>
+<h1>ПРИНИМАЮ НА СЕБЯ ЗАПОВЕДЬ: ”ЛЮБИ БЛИЖНЕГО СВОЕГО, КАК САМОГО СЕБЯ”.</h1>
+<h1>КАК ПРЕКРАСНЫ ШАТРЫ ТВОИ, ЯАКОВ, ЖИЛИЩА ТВОИ, ИЗРАИЛЬ!'and Я, ПО ВЕЛИКОЙ МИЛОСТИ ТВОЕЙ, ВСЕВЫШНИЙ, ВОЙДУ В ТВОЙ ДОМ И СКЛОНЮСЬ В СВЯТИЛИЩЕ ТВОЕМ В ТРЕПЕТЕ ПРЕД ТОБОЮ. И Я БУДУ МОЛИТЬСЯ ТЕБЕ В ЧАС ТВОЕГО БЛАГОВОЛЕНИЯ, ГОСПОДЬ; БОЖЕ, ПО ВЕЛИКОЙ МИЛОСТИ СВОЕЙ ОТВЕТЬ МНЕ, ДАРОВАВ МНЕ ИСТИННОЕ СПАСЕНИЕ.</h1>
+
+<script>
+    // Функция для создания меню навигации
+    function createNavigationMenu() {
+        const sections = document.querySelectorAll('.section');
+        const menuList = document.getElementById('menu-list');
+        const currentSection = document.getElementById('current-section');
+
+        sections.forEach(section => {
+            const sectionId = section.id;
+            const sectionTitle = section.querySelector('h2').textContent;
+            const listItem = document.createElement('li');
+            listItem.textContent = sectionTitle;
+            listItem.addEventListener('click', () => {
+                const target = document.getElementById(sectionId);
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                currentSection.textContent = sectionTitle;
+                menuList.classList.remove('open');
+            });
+            menuList.appendChild(listItem);
+        });
+
+        // Обработчик клика для открытия/закрытия меню
+        currentSection.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuList.classList.toggle('open');
+        });
+
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (!currentSection.contains(e.target) && !menuList.contains(e.target)) {
+                menuList.classList.remove('open');
+            }
+        });
+
+        // Обновление текущего раздела при прокрутке
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop <= window.innerHeight / 2) {
+                    current = section.querySelector('h2').textContent;
+                }
+            });
+            if (current) {
+                currentSection.textContent = current;
+            }
+        });
+    }
+
+    // Вызов функции при загрузке страницы
+    window.onload = createNavigationMenu;
+</script>
+</body>
+</html>

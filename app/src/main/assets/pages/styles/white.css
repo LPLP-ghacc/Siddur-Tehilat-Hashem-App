@@ -217,6 +217,7 @@ h3 {
   text-align: center;
   color: var(--text-accent);
   transition: var(--transition);
+  scroll-margin-top: 80px;
 }
 
 /* Content layout */

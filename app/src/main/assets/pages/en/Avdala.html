@@ -1,22 +1,4 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script>
-    function toggleText(textId) {
-      const text = document.getElementById(`hidden-text${textId}`);
-      const button = event.target;
-
-      // Toggle text visibility
-      if (text.style.display === 'none') {
-        text.style.display = 'block';
-        button.querySelector('i').classList.remove('fa-plus');
-        button.querySelector('i').classList.add('fa-minus');  // Change to minus icon
-      } else {
-        text.style.display = 'none';
-        button.querySelector('i').classList.remove('fa-minus');
-        button.querySelector('i').classList.add('fa-plus');  // Change to plus icon
-      }
-    }
-</script>
-
 <body>
 <div class="header">
     <div class="dropdown">
@@ -26,6 +8,7 @@
         </ul>
     </div>
 </div>
+<script src="file:///android_asset/pages/scripts/menu.js"></script>
 
 <br>
 <br>

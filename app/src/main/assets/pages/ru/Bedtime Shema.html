@@ -13,41 +13,7 @@
     </div>
 </div>
 
-<script>
-    const menu = document.getElementById('menu');
-    const currentSection = document.querySelector('.current-section');
-
-    function toggleDropdown() {
-        menu.classList.toggle('open');
-    }
-
-    function jumpToSection(id) {
-        const section = document.getElementById(id);
-        if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-            menu.classList.remove('open');
-            updateCurrentSection(id);
-        }
-    }
-
-    function updateCurrentSection(id) {
-        currentSection.textContent = document.getElementById(id).textContent;
-    }
-
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('.section');
-        let currentId = '';
-        sections.forEach((section) => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom > 100) {
-                currentId = section.id;
-            }
-        });
-        if (currentId) {
-            updateCurrentSection(currentId);
-        }
-    });
-</script>
+<script src="file:///android_asset/pages/scripts/menu.js"></script>
 
 <div id="section0" class="section"><h2>{{ribono}}</h2></div>
 <h1>ВЛАСТЕЛИН МИРА! Я ПРОЩАЮ ВСЯКОГО, КТО ОБИДЕЛ МЕНЯ, ИЛИ ОСКОРБИЛ МЕНЯ, ИЛИ НАНЕС УЩЕРБ - ЛИЧНО МНЕ, ИЛИ ИМУЩЕСТВУ МОЕМУ, ИЛИ МОЕМУ ДОБРОМУ ИМЕНИ, ИЛИ ЧЕМУ-ЛИБО ИЗ ТОГО, ЧТО МНЕ ПРИНАДЛЕЖИТ, - ВЫНУЖДЕННО ИЛИ ДОБРОВОЛЬНО, ПО ОШИБКЕ ИЛИ УМЫШЛЕННО, СЛОВОМ ИЛИ ДЕЛОМ, В ЭТОЙ ЖИЗНИ ИЛИ В ПРЕДЫДУЩЕЙ, -- ПРОЩАЮ Я ВСЯКОМУ СЫНУ ИЗРАИЛЯ; ДА НЕ БУДЕТ НИКТО НАКАЗАН ИЗ-ЗА МЕНЯ. ДА БУДЕТ УГОДНО ТЕБЕ, ГОСПОДЬ, БОГ МОЙ И БОГ ОТЦОВ МОИХ, ЧТОБЫ Я НЕ ГРЕШИЛ БОЛЕЕ И НЕ ПОВТОРЯЛ СВОИХ ПРОСТУПКОВ И ЧТОБЫ Я НИКОГДА БОЛЬШЕ НЕ ГНЕВАЛ ТЕБЯ И НЕ ДЕЛАЛ ТОГО, ЧТО ДУРНО В ГЛАЗАХ ТВОИХ; А ОТ ГРЕХОВ, КОТОРЫЕ Я СОВЕРШИЛ, ОЧИСТЬ МЕНЯ ПО ВЕЛИКОЙ МИЛОСТИ СВОЕЙ, НЕ ПОСЫЛАЯ МНЕ СТРАДАНИЙ И ТЯЖКИХ БОЛЕЗНЕЙ. ДА БУДУТ УГОДНЫ ТЕБЕ СЛОВА МОИХ УСТ И ПОМЫСЛЫ СЕРДЦА МОЕГО, О, ГОСПОДЬ, - МОЙ ОПЛОТ И ИЗБАВИТЕЛЬ.</h1>
